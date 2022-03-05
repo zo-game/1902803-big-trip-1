@@ -1,6 +1,4 @@
-export const createEventsTemlate = () =>( `
-<section class="trip-events">
-  <h2 class="visually-hidden">Trip events</h2>
+export const createEventsTemlate = () =>( ` 
 
   <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     <div class="trip-sort__item  trip-sort__item--day">
@@ -510,7 +508,5 @@ export const createEventsTemlate = () =>( `
         </button>
       </div>
     </li>
-  </ul>
-</section>
-`
+  </ul>`
 );

@@ -4,7 +4,6 @@ import { createFilterTemlate } from "./view/site-filter-view";
 import { createEventsTemplate } from "./view/site-events-view";
 import { renderTemplate, RenderPosition } from './render.js';
 import { generateEvent } from "./mock/event";
-import { generateTicket } from "./mock/ticket"
 
 const eventCount = 6;
 const events = Array.from({length: eventCount}, generateEvent);

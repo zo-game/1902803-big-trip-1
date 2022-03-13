@@ -109,6 +109,14 @@ export const generateCostServise = (key) =>
     return serviseCost[key];
 }
 
+const getRandomImages = () => {
+    let imagesIndexes = [];    
+    for(let i = 0; i < 5; i++){
+        imagesIndexes.push(`http://picsum.photos/248/152?r=${Math.random() * 20}`);
+    }
+    return imagesIndexes;
+}
+
 export const generateEvent = () => {
     const orderType = generateOrderType();
     const waitingTime = getWaitingTime();
@@ -121,7 +129,9 @@ export const generateEvent = () => {
         eventCost : generateCost(),
         eventServises : generateServises(orderType),
         serviseCost : generateCostServise(orderType),
-        isFavorite : getFavoriteEvent()
+        isFavorite : getFavoriteEvent(),
+        imgIndexes : getRandomImages()
+
     }    
 }
 

@@ -1,13 +1,6 @@
-function getRandomInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-export const createTicketTemlate = (event) =>{ 
+export const createTicketTemlate = (event) => {
   const {eventIcon, eventTitle, imgIndexes} = event;
-  console.log(imgIndexes[0]);
-  console.log();
-  return  `
-  <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+  return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     <div class="trip-sort__item  trip-sort__item--day">
       <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
       <label class="trip-sort__btn" for="sort-day">Day</label>
@@ -197,5 +190,5 @@ export const createTicketTemlate = (event) =>{
                   </section>
       </form>
     </li>
-    </ul>`
+    </ul>`;
 };

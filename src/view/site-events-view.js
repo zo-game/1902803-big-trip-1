@@ -1,4 +1,6 @@
-export const createEventsTemplate = (event) => {
+import { createElement } from '../render';
+
+const createEventsTemplate = (event) => {
   const {data, eventIcon,
     eventTitle,
     periodTime,
@@ -8,7 +10,7 @@ export const createEventsTemplate = (event) => {
     isFavorite, serviseCost} = event;
 
   const favoriteClass = isFavorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
-  return `<li class="trip-events__item">
+  return `<section><li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="2019-03-18">${data}</time>
         <div class="event__type">
@@ -45,7 +47,31 @@ export const createEventsTemplate = (event) => {
         </button>
       </div>
     </li>
-
-    
-  `;
+    </section>`;
 };
+
+export default class TripEventView {
+  #element = null;
+  #tripEvent = null;
+
+  constructor(tripEvent){
+    this.#tripEvent = tripEvent;
+  }
+
+  get element() {
+    if(!this.#element){
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createEventsTemplate(this.#tripEvent);
+  }
+
+  removeElement(){
+    this.#element = null;
+  }
+}
+

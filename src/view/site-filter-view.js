@@ -1,5 +1,7 @@
-export const createFilterTemlate = () =>(
-  `
+import { createElement } from '../render';
+
+const createFilterTemlate = () =>(
+  `<section>
     <h2 class="visually-hidden">Filter events</h2>
     <form class="trip-filters" action="#" method="get">
       <div class="trip-filters__filter">
@@ -18,6 +20,26 @@ export const createFilterTemlate = () =>(
       </div>
 
       <button class="visually-hidden" type="submit">Accept filter</button>
-    </form>
+    </form></section>
   `
 );
+
+export default class SiteFiltersView {
+  #element = null;
+
+  get element() {
+    if(!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template(){
+    return createFilterTemlate();
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

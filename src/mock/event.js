@@ -25,6 +25,7 @@ const generateTitle = (key) => {
       'check-in':'Check-in Chamonix',
       'sightseeing':'Sightseeing Chamonix'
     };
+  //   if (titles.hasOwnProperty(key))
   if (key in titles)
   {
     return titles[key];

@@ -1,4 +1,3 @@
-import { createElement } from '../utils/render';
 import { generateEvent } from '../mock/event';
 import AbstractClass from './abstract-class';
 const eventData = generateEvent;

@@ -1,4 +1,3 @@
-import { createElement } from '../utils/render';
 import AbstractClass from './abstract-class';
 
 export const createTicketTemlate = (event) => {

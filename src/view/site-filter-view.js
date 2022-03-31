@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractClass from './abstract-class';
 
 const createFilterTemlate = () =>(
   `<section>
@@ -23,23 +23,8 @@ const createFilterTemlate = () =>(
     </form></section>
   `
 );
-
-export default class SiteFiltersView {
-  #element = null;
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
+export default class SiteFiltersView extends AbstractClass{
   get template(){
     return createFilterTemlate();
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

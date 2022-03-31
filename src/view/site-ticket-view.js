@@ -1,4 +1,5 @@
-import { createElement } from '../render';
+import { createElement } from '../utils/render';
+import AbstractClass from './abstract-class';
 
 export const createTicketTemlate = (event) => {
   const {eventIcon, eventTitle, imgIndexes} = event;
@@ -200,27 +201,16 @@ export const createTicketTemlate = (event) => {
     </div>`;
 };
 
-export default class TicketTemplate{
-  #element = null;
+export default class TicketTemplate extends AbstractClass
+{
   #event = null;
 
   constructor(event){
+    super();
     this.#event = event;
-  }
-
-  get element() {
-    if(!this.#element){
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createTicketTemlate(this.#event);
-  }
-
-  removeElement(){
-    this.#element = null;
   }
 }

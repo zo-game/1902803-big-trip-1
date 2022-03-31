@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractClass from './abstract-class';
 
 const createEventsTemplate = (event) => {
   const {data, eventIcon,
@@ -50,28 +50,25 @@ const createEventsTemplate = (event) => {
     </section>`;
 };
 
-export default class TripEventView {
-  #element = null;
+export default class TripEventView extends AbstractClass{
   #tripEvent = null;
 
   constructor(tripEvent){
+    super();
     this.#tripEvent = tripEvent;
-  }
-
-  get element() {
-    if(!this.#element){
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createEventsTemplate(this.#tripEvent);
   }
 
-  removeElement(){
-    this.#element = null;
+  setEditCardToFormClickHandler = (callback) => {
+    this._callback.editCardToFormClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  }
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editCardToFormClick();
   }
 }
-

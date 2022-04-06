@@ -3,7 +3,7 @@ import TicketTemplate from './view/site-ticket-view';
 import SiteFiltersView from './view/site-filter-view';
 import TripEventView from './view/site-events-view';
 import TripEditEventView from './view/site-edit-events-view';
-import { RenderPosition, render as render } from './render.js';
+import { RenderPosition, render as render, replace } from './utils/render.js';
 import { generateEvent } from './mock/event';
 import ControlsTemplate from './view/trip-controls-template';
 import NoTripEventElement from './view/no-events-view';
@@ -16,10 +16,10 @@ const renderTripEvent = (eventTripListElement, tripEvent) => {
   const eventEditComponent = new TripEditEventView(tripEvent);
 
   const replaceCardToForm = () => {
-    eventTripListElement.replaceChild(eventEditComponent.element, tripEventComponent.element);
+    replace(eventEditComponent, tripEventComponent);
   };
   const replaceFormToCard = () => {
-    eventTripListElement.replaceChild(tripEventComponent.element, eventEditComponent.element);
+    replace(tripEventComponent, eventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -29,15 +29,17 @@ const renderTripEvent = (eventTripListElement, tripEvent) => {
       document.removeEventListener('keydown', onEscKeyDown);
     }
   };
-  tripEventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  tripEventComponent.setEditCardToFormClickHandler(() =>
+  {
     replaceCardToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
-  eventEditComponent.element.querySelector('.event--edit').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+
+  eventEditComponent.setEditFormToCardClickHandler(() => {
     replaceFormToCard();
     document.removeEventListener('keydown', onEscKeyDown);
   });
+
   return render(eventTripListElement, tripEventComponent.element, RenderPosition.BEFOREEND);
 };
 const tripBody = document.querySelector('.page-body');

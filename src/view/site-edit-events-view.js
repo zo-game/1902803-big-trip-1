@@ -1,19 +1,10 @@
-import { createElement } from '../render';
 import { generateEvent } from '../mock/event';
+import AbstractClass from './abstract-class';
 const eventData = generateEvent;
 
 const createEventsTemplate = (event) => {
-//   const {data, eventIcon,
-//     eventTitle,
-//     periodTime,
-//     waitingTime,
-//     eventCost,
-//     eventServises,
-//     isFavorite, serviseCost} = event;
   const { eventIcon,
     eventTitle, imgIndexes} = event;
-
-  //   const favoriteClass = isFavorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
   return `<section class="trip-events">
   <h2 class="visually-hidden">Trip events</h2>
   <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -214,28 +205,26 @@ const createEventsTemplate = (event) => {
   `;
 };
 
-export default class TripEditEventView {
-  #element = null;
+export default class TripEditEventView extends AbstractClass{
   #tripEvent = null;
 
   constructor(tripEvent = eventData){
+    super();
     this.#tripEvent = tripEvent;
-  }
-
-  get element() {
-    if(!this.#element){
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createEventsTemplate(this.#tripEvent);
   }
 
-  removeElement(){
-    this.#element = null;
+  setEditFormToCardClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#editClickHandler);
+  }
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 }
 

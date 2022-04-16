@@ -30,9 +30,8 @@ export default class PointPresenter{
       this.#tripEditComponent = new TripEditEventView(event);
 
       this.#tripEventComponent.setEditCardToFormClickHandler(this.#handleEditForm);
-      this.#tripEventComponent.setFavoriteClickHandler(() => {
-        this.#changeData({ ...this.#event, isFavorite: !this.#event.isFavorite });
-      });
+      this.#tripEventComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+
       this.#tripEditComponent.setEditFormToCardClickHandler(() => {
         replace(this.#tripEventComponent, this.#tripEditComponent);
         document.removeEventListener('keydown', this.#escKeyDownHandler);

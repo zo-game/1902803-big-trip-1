@@ -12,12 +12,15 @@ export default class PointPresenter{
     #tripEditComponent = null;
     #tripEventComponent = null;
     #changeData = null;
+    #changeMode = null;
+
     #mode = Mode.DEFAULT;
 
     #event = null
-    constructor(taskEventComponent, dataChange){
+    constructor(taskEventComponent, dataChange, changeMode){
       this.#tripEventContainer = taskEventComponent;
       this.#changeData = dataChange;
+      this.#changeMode = changeMode;
     }
 
     init = (event) =>{
@@ -38,12 +41,12 @@ export default class PointPresenter{
       });
 
       render(this.#tripEventContainer, this.#tripEventComponent, RenderPosition.BEFOREEND);
-      if(this.#mode === Mode.DEFAULT && prevEventComponent)
+      if(prevEventComponent && this.#mode === Mode.DEFAULT)
       {
         replace(this.#tripEventComponent, prevEventComponent);
       }
 
-      if(this.#mode === Mode.EDITING && prevEditEventComponent)
+      if(prevEditEventComponent && this.#mode === Mode.EDITING)
       {
         replace(this.#tripEditComponent, prevEditEventComponent);
       }
@@ -59,9 +62,8 @@ export default class PointPresenter{
     #handleFormSubmit = (event) =>{
       this.#changeData(event);
       this.#replaceFormToCard();
-
-
     }
+
 
     #handleFavoriteClick = () =>{
       this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
@@ -78,13 +80,21 @@ export default class PointPresenter{
     #replaceFormToCard = () => {
       replace(this.#tripEventComponent, this.#tripEditComponent);
       document.removeEventListener('keydown', this.#escKeyDownHandler);
+
       this.#mode = Mode.DEFAULT;
     }
 
     #replaceCardToForm =()=>{
       replace(this.#tripEditComponent, this.#tripEventComponent);
       document.addEventListener('keydown', this.#escKeyDownHandler);
+      this.#changeMode();
       this.#mode = Mode.EDITING;
+    }
+
+    resetView = () => {
+      if (this.#mode !== Mode.DEFAULT) {
+        this.#replaceFormToCard();
+      }
     }
 
     #escKeyDownHandler = (evt) =>{

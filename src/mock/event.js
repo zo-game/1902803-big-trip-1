@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 export function getRandomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -120,6 +121,18 @@ const getRandomImages = () => {
 export const generateEvent = () => {
   const orderType = generateOrderType();
   const waitingTime = getWaitingTime();
-  return {data : getDate(),eventIcon : generateIcon(orderType),eventTitle : generateTitle(orderType),periodTime : getTimePeriod(waitingTime),waitingTime : `${waitingTime}M`,eventCost : generateCost(),eventServises : generateServises(orderType),serviseCost : generateCostServise(orderType),isFavorite : getFavoriteEvent(),    imgIndexes : getRandomImages() };
+  return {
+    data : getDate(),
+    eventIcon : generateIcon(orderType),
+    eventTitle : generateTitle(orderType),
+    periodTime : getTimePeriod(waitingTime),
+    waitingTime : `${waitingTime}M`,
+    eventCost : generateCost(),
+    eventServises : generateServises(orderType),
+    serviseCost : generateCostServise(orderType),
+    id : nanoid(),
+    isFavorite : getFavoriteEvent(),
+    imgIndexes : getRandomImages(),
+  };
 };
 

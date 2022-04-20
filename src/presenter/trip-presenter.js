@@ -1,99 +1,106 @@
-import NoTripEventElement from '../view/no-events-view';
-import EventContainer from '../view/site-event-container';
-import {render, RenderPosition } from '../utils/render';
-import ControlsTemplate from '../view/trip-controls-template';
-import SortTicketView from '../view/sort-ticket-view';
-import SiteFiltersView from '../view/site-filter-view';
-import PointPresenter from './point-presenter';
-import { updateItem } from '../utils/common';
+import SortView from '../view/sort-view';
+import PointListView from '../view/point-list-view';
+import MessageWithoutPoints from '../view/empty-points-list';
+import { render, renderPosition } from '../render.js';
+import PointPresenter from './Point-presenter';
+import { updateItem } from '../common';
+
+import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-functions';
+
 
 export default class TripPresenter {
-    #tripComponent = null;
-    #tripControlsComponent = null;
-    #tripFiltersComponent = null;
+  #tripContainer = null;
 
-    #noTripComponent = new NoTripEventElement();
-    #controlsTemplate = new ControlsTemplate();
-    #sortTicketTemplate = new SortTicketView();
-    #siteFiltersTemplate = new SiteFiltersView();
-    #firstTicketTemplate = null;
+  #noPointsComponent = new MessageWithoutPoints();
+  #sortComponent = new SortView();
+  #pointListComponent = new PointListView();
 
-    #pointPresenter = new Map();
-    #events = [];
 
-    constructor(tripComponent, tripControlsComponent, tripFiltersComponent){
-      this.#tripComponent = tripComponent;
-      this.#tripControlsComponent = tripControlsComponent;
-      this.#tripFiltersComponent = tripFiltersComponent;
+  #boardPoints = [];
+  #pointPresenter = new Map();
+  #sourceBoardPoints = [];
+  #currentSortType = null;
+
+  constructor(tripContainer) {
+    this.#tripContainer = tripContainer;
+  }
+
+  init = (boardPoints) => {
+    this.#boardPoints = [...boardPoints];
+    this.#sourceBoardPoints = [...boardPoints];
+
+    render(this.#tripContainer, this.#pointListComponent, renderPosition.BEFOREEND);
+
+    this.#renderBoard();
+  }
+
+  #handleModeChange = () => {
+    this.#pointPresenter.forEach((element) => element.resetView());
+  }
+
+  #handlePointChange = (updatePoint) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
+    this.#pointPresenter.get(updatePoint.id).init(updatePoint);
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
     }
 
-    init = (events) =>{
-      this.#events = [...events];
-      this.#firstTicketTemplate = new EventContainer();
-      this.#renderTrip();
+    this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderPoints();
+  }
+
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortType.PRICE.text:
+        this.#boardPoints.sort(sortPointsByPrice);
+        break;
+      case SortType.TIME.text:
+        this.#boardPoints.sort(sortPointsByTime);
+        break;
+      default:
+        this.#boardPoints = [...this.#sourceBoardPoints];
     }
 
-    #renderNoTrip = () =>{
-      render(this.#tripComponent, this.#noTripComponent.element, RenderPosition.AFTERBEGIN);
+    this.#currentSortType = sortType;
+  }
+
+  #renderPoint = (point) => {
+    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handlePointChange, this.#handleModeChange);
+    pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
+  };
+
+  #renderPoints = () => {
+    this.#boardPoints
+      .forEach((boardPoint) => this.#renderPoint(boardPoint));
+  }
+
+  #clearPointList = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
+  }
+
+  #renderSort = () => {
+    render(this.#tripContainer, this.#sortComponent, renderPosition.AFTERBEGIN);
+    this.#sortComponent.setSortChengeClickHandler(this.#handleSortTypeChange);
+  }
+
+
+  #renderNoPoints = () => {
+    render(this.#tripContainer, this.#noPointsComponent, renderPosition.BEFOREEND);
+  }
+
+  #renderBoard = () => {
+    if (this.#boardPoints.length === 0) {
+      this.#renderNoPoints();
+      return;
     }
+    this.#renderSort();
+    this.#renderPoints();
 
-    #renderTripEvent = (event) =>{
-      const pointPresenter = new PointPresenter(this.#firstTicketTemplate, this.#handleEventChange, this.#handleModeChange);
-      pointPresenter.init(event);
-      this.#pointPresenter.set(event.id, pointPresenter);
-    }
-
-    #renderTripEvents = () =>{
-      this.#events
-        .forEach((event) => this.#renderTripEvent(event));
-    }
-
-    #renderTicketTemplate = () =>{
-      render(this.#sortTicketTemplate.element, this.#firstTicketTemplate.element, RenderPosition.BEFOREEND);
-    }
-
-    #renderControlsTemplate = () =>{
-      render(this.#tripControlsComponent, this.#controlsTemplate.element, RenderPosition.BEFOREEND);
-    }
-
-    #renderSortTemplate = () =>{
-      render(this.#tripComponent, this.#sortTicketTemplate.element, RenderPosition.BEFOREBEGIN);
-    }
-
-    #renderFilters = () =>{
-      render(this.#tripFiltersComponent, this.#siteFiltersTemplate.element, RenderPosition.BEFOREEND);
-    }
-
-    #renderTopNavbar = ()=>{
-      this.#renderControlsTemplate();
-      this.#renderFilters();
-      this.#renderSortTemplate();
-    }
-
-    #renderTrip = () =>{
-      if((this.#events.every((event) => event.isArchive))){
-        this.#renderNoTrip();
-        return;
-      }
-
-      this.#renderTopNavbar();
-      this.#renderTicketTemplate();
-      this.#renderTripEvents();
-
-    }
-
-    #handleEventChange = (updatedEvent) => {
-      this.#events = updateItem(this.#events, updatedEvent);
-      this.#pointPresenter.get(updatedEvent.id).init(updatedEvent);
-    }
-
-    #handleModeChange = () =>{
-      this.#pointPresenter.forEach((presenter) => presenter.resetView());
-    }
-
-    #clearEventsList = () =>{
-      this.#pointPresenter.forEach((presenter) => presenter.destroy());
-      this.#pointPresenter.clear();
-    }
+  }
 }
-

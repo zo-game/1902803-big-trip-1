@@ -1,23 +1,15 @@
-import { generateEvent } from '../mock/event';
-import AbstractClass from './abstract-class';
-const eventData = generateEvent;
+import AbstractView from './abstract-view';
 
-const createEventsTemplate = (event) => {
-  const { eventIcon,
-    eventTitle} = event;
-  const imgIndexes = event.imgIndexes;
-  return `<section class="trip-events">
-  <h2 class="visually-hidden">Trip events</h2>
-  
+const createOfferForm = (point) => {
+  const {pointType, destination, destinationInfo} = point;
 
-  <ul class="trip-events__list">
-    <li class="trip-events__item">
+  return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="${eventIcon}" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -75,9 +67,9 @@ const createEventsTemplate = (event) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${eventTitle}
+              ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -155,53 +147,45 @@ const createEventsTemplate = (event) => {
               </div>
             </div>
           </section>
-        </section>
-        
-        <section class="event__details">
-                  <section class="event__section  event__section--destination">
-                    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                    <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
 
-                    <div class="event__photos-container">
-                      <div class="event__photos-tape">
-                        <img class="event__photo" src=${imgIndexes[0]} alt="Event photo">
-                        <img class="event__photo" src=${imgIndexes[1]} alt="Event photo">
-                        <img class="event__photo" src=${imgIndexes[2]} alt="Event photo">
-                        <img class="event__photo" src=${imgIndexes[3]} alt="Event photo">
-                        <img class="event__photo" src=${imgIndexes[4]} alt="Event photo">                        
-                      </div>
-                    </div>
-                  </section>
+          <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+            <p class="event__destination-description">${destinationInfo.description}</p>
+
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                <img class="event__photo" src="${destinationInfo.pictures[0]}" alt="Event photo">
+                <img class="event__photo" src="${destinationInfo.pictures[1]}" alt="Event photo">
+                <img class="event__photo" src="${destinationInfo.pictures[2]}" alt="Event photo">
+                <img class="event__photo" src="${destinationInfo.pictures[3]}" alt="Event photo">
+                <img class="event__photo" src="${destinationInfo.pictures[4]}" alt="Event photo">
+              </div>
+            </div>
+          </section>
         </section>
       </form>
-    </li>
-    </ul>
-    </section>     
-  `;
+    </li>`;
 };
 
-export default class TripEditEventView extends AbstractClass{
-  #tripEvent = null;
+export default class OfferFormView extends AbstractView {
+  #point = null;
 
-  constructor(tripEvent = eventData){
+  constructor(point) {
     super();
-    this.#tripEvent = tripEvent;
+    this.#point = point;
   }
 
   get template() {
-    return createEventsTemplate(this.#tripEvent);
+    return createOfferForm(this.#point);
   }
 
-  setEditFormToCardClickHandler = (callback) => {
-    this._callback.editClick = callback;
-    this.element.querySelector('.event--edit').addEventListener('submit', this.#editClickHandler);
-    // this.element.querySelector('.event--edit').addEventListener('click', this.#editClickHandler);
-    // this.element.querySelector('.event__reset-btn').addEventListener('click', this.#editClickHandler);
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
   }
 
-  #editClickHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.formSubmit(this.#point);
   }
 }
-

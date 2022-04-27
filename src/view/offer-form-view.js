@@ -4,8 +4,6 @@ import { servises } from '../mock/point';
 const createOfferForm = (point) => {
   const {pointType, destination, destinationInfo} = point;
   const offersForm = servises[point.pointType];
-  const thirdOfferForm = {price : (offersForm.length === 2) ? '50' : offersForm[2].price,
-    description : (offersForm.length === 2) ? 'Restaurant' : offersForm[2].description};
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">

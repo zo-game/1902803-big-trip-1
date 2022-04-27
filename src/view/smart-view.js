@@ -64,7 +64,7 @@ export default class SmartView extends AbstractView{
     renderOffers = (point) =>{
       const count = servises[point].length;
       const offers = this.element.querySelectorAll('.event__offer-selector');
-      for(let i = count; i < 5; i++){
+      for(let i = 0; i < 3; i++){
         offers[i].classList.add('visually-hidden');
       }
       for(let i = 0; i < count; i++){

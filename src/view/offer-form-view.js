@@ -126,9 +126,9 @@ const createOfferForm = (point) => {
               <div class="event__offer-selector">
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
                 <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">${thirdOfferForm.description}</span>
+                  <span class="event__offer-title">${(offersForm.length === 2) ? 'Restaurant' : offersForm[2].description}</span>
                   &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${thirdOfferForm.price}</span>
+                  <span class="event__offer-price">${(offersForm.length === 2) ? '50' : offersForm[2].price}</span>
                 </label>
               </div>
             </div>

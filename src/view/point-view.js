@@ -1,7 +1,7 @@
 import AbstractView from './abstract-view.js';
 
 const createPointTemplate = (point) => {
-  const {pointType, price, destination, offer, isFavorite, waitingTime, period} = point;
+  const {pointType, price, destination, isFavorite, waitingTime, period} = point;
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'

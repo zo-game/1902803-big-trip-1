@@ -59,7 +59,6 @@ export default class SmartView extends AbstractView{
       evt.preventDefault();
       this.#pointType = evt.target.value;
       this.updateData({pointType : this.#pointType}, false);
-      // this.renderOffers(this.#pointType);
     }
 
     renderOffers = (point) =>{

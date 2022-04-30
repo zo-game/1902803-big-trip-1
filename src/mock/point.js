@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import dayjs from 'dayjs';
 
 export const isEqualCities = (inputValue) =>{
   const cities = ['Moscow', 'Berlin', 'Prague', 'Perm',
@@ -80,26 +81,24 @@ const getTimePeriod = (waitingTime) => {
   return [`${startPeriod.getHours()}:${startPeriod.getMinutes()}`, `${endPeriod.getHours()}:${endPeriod.getMinutes()}`];
 };
 
+const getDate = ()=>{
+  const day = dayjs(new Date());
+  day.add(getRandomIntInclusive(0, 12), 'month');
+  day.add(getRandomIntInclusive(0, 8), 'day');
+  day.add(getRandomIntInclusive(0, 24), 'hour');
+
+  return day;
+};
+
 const getWaitingTime = () => {
   const randomNumber = getRandomIntInclusive(1, 24);
   return randomNumber * 5;
-};
-export const offersCount = {
-  'taxi' : 2,
-  'bus' : 3,
-  'train':3,
-  'ship':3,
-  'drive':3,
-  'flight': 3,
-  'check-in': 2,
-  'sightseeing': 2,
-  'restaurant': 2
 };
 
 export const generatePoint = () => {
   const pointType = generatePointType();
   const waitingTime = getWaitingTime();
-
+  const date = getDate();
   return {
     pointType,
     id: nanoid(),
@@ -116,6 +115,10 @@ export const generatePoint = () => {
     isFavorite: false,
     waitingTime: waitingTime,
     period: getTimePeriod(waitingTime),
-    offersForm : servises[pointType]
+    offersForm : servises[pointType],
+    dateStartEvent: date,
+    dateEndEvent: date,
   };
 };
+
+

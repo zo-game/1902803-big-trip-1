@@ -1,39 +1,22 @@
 import AbstractView from './abstract-view';
 import { generateDescription,  generatePictures, isEqualCities, servises} from '../mock/point';
+import { nanoid } from 'nanoid';
 
 export default class SmartView extends AbstractView{
     _data = {};
-    #pointType = null;
+    _pointType = null;
+    initialData = null;
 
-    updateData = (update, justDataUpdating) => {
-      if(!update){
-        return;
-      }
-      this._data = { ...this._data, ...update};
-      if(justDataUpdating){
-        return;
-      }
 
-      this.updateElement();
+    reset = (point) =>{
+      this.updateData({...point,
+        destination : point.destination,
+        destinationInfo : {description: point.destinationInfo.description,
+          pictures : point.destinationInfo.pictures},
+        id: nanoid()});
+      this.renderOffers(point.destination);
     }
 
-    updateElement = () =>{
-      const prevElement = this.element;
-      const parent = prevElement.parentElement;
-      this.removeElement();
-
-      const newElement = this.element;
-      parent.replaceChild(newElement, prevElement);
-      this.renderOffers(this.#pointType);
-
-      this.#restoreHandlers();
-    }
-
-    #restoreHandlers = ()=>{
-      this.setFormClickHandler();
-      this.setFormSubmitHandler(this._callback.formSubmit);
-      this.setEditDestinationForm();
-    }
 
     setFormClickHandler = () =>{
       (this.element.querySelectorAll('.event__type-input'))
@@ -51,14 +34,14 @@ export default class SmartView extends AbstractView{
       evt.preventDefault();
       if(isEqualCities(evt.target.value)){
         this.updateData({destination : evt.target.value, destinationInfo : {description: generateDescription(),
-          pictures : generatePictures()}}, false);
+          pictures : generatePictures()}});
       }
     }
 
     #updateClickHandler = (evt) =>{
       evt.preventDefault();
-      this.#pointType = evt.target.value;
-      this.updateData({pointType : this.#pointType}, false);
+      this._pointType = evt.target.value;
+      this.updateData({pointType : this._pointType});
     }
 
     renderOffers = (point) =>{

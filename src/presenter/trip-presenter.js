@@ -15,7 +15,6 @@ export default class TripPresenter {
   #sortComponent = new SortView();
   #pointListComponent = new PointListView();
 
-
   #boardPoints = [];
   #pointPresenter = new Map();
   #sourceBoardPoints = [];

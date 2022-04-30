@@ -1,8 +1,14 @@
 import SmartView from './smart-view';
 import { servises } from '../mock/point';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
+
 
 const createOfferForm = (point) => {
-  const {pointType, destination, destinationInfo} = point;
+  const {pointType, destination, destinationInfo, dateStartEvent, dateEndEvent, price} = point;
+  const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY H:m');
+  const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY H:m');
   const offersForm = servises[point.pointType];
 
   return `<li class="trip-events__item">
@@ -81,10 +87,10 @@ const createOfferForm = (point) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endEventTime}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -92,7 +98,7 @@ const createOfferForm = (point) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -152,15 +158,20 @@ const createOfferForm = (point) => {
 };
 
 export default class OfferFormView extends SmartView {
+  #datepicker = null;
 
   constructor(point) {
     super();
 
     this._data = point;
+    this.initialData = point;
+    this._pointType = point.pointType;
     this.renderOffers(point.pointType);
+
     this.setFormClickHandler();
     this.setEditDestinationForm();
 
+    this.#setDatePikcker();
   }
 
   get template() {
@@ -175,5 +186,85 @@ export default class OfferFormView extends SmartView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(this._data);
+  }
+
+  #setDatePikcker = () => {
+    this.#setDatePickerStart();
+    this.#setDatePickerEnd();
+  }
+
+  #setDatePickerStart =()=>{
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        onchange: this.#dueDateStartChangeHandler,
+        defaultDate: this._data.dateStartEvent,
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+      }
+    );
+  }
+
+  #setDatePickerEnd =()=>{
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        onchange: this.#dueDateEndChangeHandler,
+        // eslint-disable-next-line camelcase
+        time_24hr: true,
+      }
+    );
+  }
+
+  #dueDateEndChangeHandler = ([userDate]) => {
+    this.updateData({
+      dateEndEvent: userDate,
+    });
+  }
+
+  #dueDateStartChangeHandler = ([userDate]) => {
+    this.updateData({
+      dateStartEvent: userDate,
+    });
+  }
+
+  removeElement =() =>{
+    super.removeElement();
+
+    if(this.#datepicker){
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  }
+
+  updateElement = () =>{
+    const prevElement = this.element;
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.element;
+    parent.replaceChild(newElement, prevElement);
+    this.renderOffers(this._pointType);
+
+    this.#restoreHandlers();
+  }
+
+  #restoreHandlers = ()=>{
+    this.setFormClickHandler();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setEditDestinationForm();
+    this.#setDatePikcker();
+  }
+
+  updateData = (update) => {
+    if(!update){
+      return;
+    }
+    this._data = { ...this._data, ...update};
+    this.updateElement();
   }
 }

@@ -3,7 +3,7 @@ import SiteMenuView from './view/site-menu-view';
 import FilterView from './view/filter-view';
 import { render, renderPosition } from './render';
 import { generatePoint } from './mock/point';
-import TripPresenter from './presenter/Trip-presenter';
+import TripPresenter from './presenter/trip-presenter';
 
 
 const POINT_COUNT = 4;

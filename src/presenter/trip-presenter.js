@@ -2,7 +2,7 @@ import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view';
 import MessageWithoutPoints from '../view/empty-points-list';
 import { render, renderPosition } from '../render.js';
-import PointPresenter from './Point-presenter';
+import PointPresenter from './point-presenter';
 import { updateItem } from '../common';
 
 import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-functions';
@@ -14,7 +14,6 @@ export default class TripPresenter {
   #noPointsComponent = new MessageWithoutPoints();
   #sortComponent = new SortView();
   #pointListComponent = new PointListView();
-
 
   #boardPoints = [];
   #pointPresenter = new Map();

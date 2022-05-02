@@ -11,6 +11,7 @@ export default class PointPresenter {
   #pointContainer = null;
 
   #point = null;
+  #prevPoint = null;
   #pointComponent = null;
   #pointEditComponent = null;
   #changeData = null;
@@ -25,6 +26,7 @@ export default class PointPresenter {
 
   init = (point) => {
     this.#point = point;
+    this.#prevPoint = this.#point;
 
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#pointEditComponent;
@@ -78,9 +80,11 @@ export default class PointPresenter {
   }
 
   #onEscKeydowm = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (evt.key === 'Escape' || evt.key === 'Esc')
+    {
       evt.preventDefault();
       this.#replaceFormToPoint();
+      this.#pointEditComponent.reset(this.#prevPoint);
       document.removeEventListener('keydown', this.#onEscKeydowm);
     }
   }

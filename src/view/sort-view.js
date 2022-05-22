@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import { SortType } from '../utils/sort-functions.js';
+import { SortType } from '../utils/const.js';
 
 const CreateSortTemplate = (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -36,7 +36,7 @@ export default class SortView extends AbstractView {
     return CreateSortTemplate;
   }
 
-  setSortChengeClickHandler = (callback) => {
+  setSortChangeClickHandler = (callback) => {
     this._callback.sortChange = callback;
     document.querySelectorAll('.trip-sort__input').forEach((element) => element.addEventListener('click', this.#SortChangeHandler));
   }

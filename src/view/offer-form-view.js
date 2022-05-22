@@ -102,7 +102,7 @@ const createOfferForm = (point) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__reset-btn" type="reset">Delete</button>
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
@@ -170,7 +170,7 @@ export default class OfferFormView extends SmartView {
 
     this.setFormClickHandler();
     this.setEditDestinationForm();
-
+    this.setFormSubmitHandler();
     this.#setDatePikcker();
   }
 
@@ -250,12 +250,12 @@ export default class OfferFormView extends SmartView {
     parent.replaceChild(newElement, prevElement);
     this.renderOffers(this._pointType);
 
-    this.#restoreHandlers();
+    this._restoreHandlers();//добавить приватность
   }
 
-  #restoreHandlers = ()=>{
-    this.setFormClickHandler();
+  _restoreHandlers = ()=> {
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormClickHandler();
     this.setEditDestinationForm();
     this.#setDatePikcker();
   }

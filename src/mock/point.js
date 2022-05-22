@@ -82,10 +82,14 @@ const getTimePeriod = (waitingTime) => {
 };
 
 const getDate = ()=>{
-  const day = dayjs(new Date());
-  day.add(getRandomIntInclusive(0, 12), 'month');
-  day.add(getRandomIntInclusive(0, 8), 'day');
-  day.add(getRandomIntInclusive(0, 24), 'hour');
+  // const day = dayjs(new Date());
+  // const randomYear = getRandomIntInclusive(2016, 2025);
+  const randomMonth = getRandomIntInclusive(0, 12);
+  const randomDay = getRandomIntInclusive(0, 28);
+  const day = dayjs(`2022-${randomMonth}-${randomDay}`);
+  // day.add(getRandomIntInclusive(0, 12), 'month');
+  // day.add(getRandomIntInclusive(0, 8), 'day');
+  // day.add(getRandomIntInclusive(0, 24), 'hour');
 
   return day;
 };
@@ -118,6 +122,8 @@ export const generatePoint = () => {
     offersForm : servises[pointType],
     dateStartEvent: date,
     dateEndEvent: date,
+    formatDate: date.format('DD MMM'),
+    month : date.format('M')
   };
 };
 

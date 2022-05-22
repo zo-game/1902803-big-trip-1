@@ -1,7 +1,7 @@
 import AbstractView from './abstract-view.js';
 
 const createPointTemplate = (point) => {
-  const {pointType, price, destination, isFavorite, waitingTime, period} = point;
+  const {pointType, price, destination, isFavorite, waitingTime, period, formatDate} = point;
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -9,7 +9,7 @@ const createPointTemplate = (point) => {
 
   return `<li class="trip-events__item">
         <div class="event">
-          <time class="event__date" datetime="2019-03-18">MAR 18</time>
+          <time class="event__date" datetime="2019-03-18">${formatDate}</time>
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${pointType}.png" alt="Event type icon">
           </div>

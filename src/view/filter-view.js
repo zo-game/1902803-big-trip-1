@@ -1,20 +1,21 @@
 import AbstractView from './abstract-view.js';
+import { FilterType } from '../utils/const.js';
 
 
-const createFilterTemplate = (
+const createFilterTemplate = ( currentFilterType) => (
   `<form class="trip-filters" action="#" method="get">
     <div class="trip-filters__filter">
-      <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything">
+      <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything" ${currentFilterType === FilterType.EVERYTHING ? 'checked' : ''}>
       <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
     </div>
 
     <div class="trip-filters__filter">
-      <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
+      <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future"  ${currentFilterType === FilterType.FUTURE ? 'checked' : ''}>
       <label class="trip-filters__filter-label" for="filter-future">Future</label>
     </div>
 
     <div class="trip-filters__filter">
-      <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past" checked>
+      <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past" ${currentFilterType === FilterType.PAST ? 'checked' : ''}>
       <label class="trip-filters__filter-label" for="filter-past">Past</label>
     </div>
 
@@ -22,7 +23,16 @@ const createFilterTemplate = (
   </form> `);
 
 export default class FilterView extends AbstractView {
+  #filter = null;
+  #currentFilter = null;
+  constructor(currentFilterType){
+    super();
+
+    // this.#filter = filter;
+    this.#currentFilter = currentFilterType;
+  }
+
   get template() {
-    return createFilterTemplate;
+    return createFilterTemplate(this.#currentFilter);
   }
 }

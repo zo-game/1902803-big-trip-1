@@ -7,9 +7,6 @@ import PointModel from './model/point-model';
 import FilterPresenter from './presenter/filter-presenter';
 import FilterModel from './model/filter-model';
 
-import HeaderInfoView from './view/header-info-view';
-// import MessageWithoutPoints from './view/empty-points-list';
-
 const POINT_COUNT = 4;
 const points = Array.from({ length: POINT_COUNT }, generatePoint);
 
@@ -24,12 +21,12 @@ const filterModel = new FilterModel();
 
 pointModel.points = points;
 
-const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu);
+const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu, filterModel);
 
 
-const filterPresenter = new FilterPresenter(filtersElement);
+const filterPresenter = new FilterPresenter(filtersElement, filterModel);
 
 render(siteMenuElement, new SiteMenuView(), renderPosition.BEFOREEND);
 
 filterPresenter.init();
-tripPresenter.init(points);
+tripPresenter.init(pointModel.points);

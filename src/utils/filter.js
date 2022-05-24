@@ -21,7 +21,7 @@ const isPointPast =(p)=>{
   return false;
 };
 
-export const filter = {
+export const filters = {
   [FilterType.EVERYTHING]: (points) => points.filter(() => true),
   [FilterType.FUTURE]: (points) => points.filter((point)=> isPointFuture(point)),
   [FilterType.PAST]: (points) => points.filter((point)=> isPointPast(point))

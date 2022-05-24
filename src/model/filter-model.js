@@ -2,7 +2,7 @@ import AbstractObservable from '../abstract-observable';
 import { FilterType } from '../utils/const';
 
 export default class FilterModel extends AbstractObservable{
-    #filter = null;
+    #filter = FilterType.EVERYTHING;
 
     get filter(){
       return this.#filter;

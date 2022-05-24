@@ -16,14 +16,15 @@ export default class PointPresenter {
   #prevPoint = null;
   #pointComponent = null;
   #pointEditComponent = null;
-  #changeData = null;
   #changeMode = null;
+  #changeAction = null;
+
   #mode = Mode.DEFAULT;
 
-  constructor(pointContainer, changeData, changeMode) {
+  constructor(pointContainer,  changeMode, changeAction) {
     this.#pointContainer = pointContainer;
-    this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#changeAction = changeAction;
   }
 
   init = (point) => {
@@ -90,22 +91,14 @@ export default class PointPresenter {
   }
 
   #handleFavorite = () => {
-    this.#changeData(
-      UpdateAction.UPDATE_TASK,
-      UpdateType.PATCH,
-      { ...this.#point, isFavorite: !this.#point.isFavorite }
-    );
+    this.#changeAction(UpdateAction.UPDATE_TASK, UpdateType.PATCH, { ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
   #handleFormSubmit = (point) => {
     this.#replaceFormToPoint();//
     document.removeEventListener('keydown', this.#onEscKeydowm);//
 
-    this.#changeData(
-      UpdateAction.UPDATE_TASK,
-      UpdateType.PATCH,
-      point
-    );
+    this.#changeAction(UpdateAction.UPDATE_TASK, UpdateType.PATCH, point);
   }
 
   #handleEdit = () => {

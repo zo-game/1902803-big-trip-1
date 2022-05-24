@@ -1,10 +1,8 @@
 import SiteMenuView from './view/site-menu-view';
-// import FilterView from './view/filter-view';
 import { render, renderPosition } from './render';
 import { generatePoint } from './mock/point';
 import TripPresenter from './presenter/trip-presenter';
 import PointModel from './model/point-model';
-import FilterPresenter from './presenter/filter-presenter';
 import FilterModel from './model/filter-model';
 
 const POINT_COUNT = 4;
@@ -21,12 +19,7 @@ const filterModel = new FilterModel();
 
 pointModel.points = points;
 
-const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu, filterModel);
-
-
-const filterPresenter = new FilterPresenter(filtersElement, filterModel);
+const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu, filterModel, filtersElement);
 
 render(siteMenuElement, new SiteMenuView(), renderPosition.BEFOREEND);
-
-filterPresenter.init();
 tripPresenter.init(pointModel.points);

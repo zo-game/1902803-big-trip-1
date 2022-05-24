@@ -1,7 +1,7 @@
 import { remove, render, renderPosition, replace} from '../render';
 import FilterView from '../view/filter-view';
 import { FilterType, UpdateType } from '../utils/const';
-
+//можно удалить
 export default class FilterPresenter{
     #filterContainer = null;
     #filterComponent = null;
@@ -27,19 +27,18 @@ export default class FilterPresenter{
     }
 
     init(){
-      const filters = this.filters;
+      // const filters = this.filters;
       const prevFilterComponent = this.#filterComponent;
 
-      this.#filterComponent = new FilterView(this.#currentFilterType, filters);
+      this.#filterComponent = new FilterView(this.#currentFilterType);
       this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
       if(prevFilterComponent === null){
         render(this.#filterContainer, this.#filterComponent, renderPosition.BEFOREEND);
-        return;
       }
 
-      replace(this.#filterComponent, prevFilterComponent);
-      remove(prevFilterComponent);
+      // replace(this.#filterComponent, prevFilterComponent);
+      // remove(prevFilterComponent);
     }
 
     #handleModelEvent = ()=>{

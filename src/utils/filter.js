@@ -2,9 +2,9 @@ import { FilterType } from './const';
 import dayjs from 'dayjs';
 
 const isPointFuture =(p)=>{
-  const today = dayjs('2019-01-25');
+  const today = dayjs();
   const dateDifference = today.diff(p.dateStartEvent);
-  if(dateDifference < 0){
+  if(dateDifference <= 0){
     return true;
   }
 
@@ -12,7 +12,7 @@ const isPointFuture =(p)=>{
 };
 
 const isPointPast =(p)=>{
-  const today = dayjs('2019-01-25');
+  const today = dayjs();
   const dateDifference = today.diff(p.dateEndEvent);
   if(dateDifference > 0){
     return true;

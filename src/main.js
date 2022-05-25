@@ -23,3 +23,8 @@ const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu, f
 
 render(siteMenuElement, new SiteMenuView(), renderPosition.BEFOREEND);
 tripPresenter.init(pointModel.points);
+
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+});

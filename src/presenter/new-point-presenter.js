@@ -1,10 +1,8 @@
 import PointView from '../view/point-view';
-// import OfferFormView from '../view/offer-form-view';
 import NewPointView from '../view/new-point-view';
 import { remove, render, renderPosition, replace } from '../render.js';
 import { UpdateAction, UpdateType } from '../utils/const';
 import PointPresenter from './point-presenter';
-import SortView from '../view/sort-view';
 
 const Mode = {
   DEFAULT: 'DEFAULT',

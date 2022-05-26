@@ -3,6 +3,7 @@ import { servises } from '../mock/point';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
+import he from 'he';
 
 
 const createOfferForm = (point) => {
@@ -77,12 +78,15 @@ const createOfferForm = (point) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination)}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
               <option value="Chamonix"></option>
-            </datalist>
+              <option value="Moscow"></option>
+              <option value="Perm"></option>
+              <option value="Prague"></option>
+              </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
@@ -98,7 +102,7 @@ const createOfferForm = (point) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -168,10 +172,11 @@ export default class OfferFormView extends SmartView {
     this._pointType = point.pointType;
     this.renderOffers(point.pointType);
 
+    this.#setEditPriceForm();
     this.setFormClickHandler();
     this.setEditDestinationForm();
-    this.setFormSubmitHandler();
     this.#setDatePikcker();
+    this.setFormSubmitHandler();
   }
 
   get template() {
@@ -183,9 +188,33 @@ export default class OfferFormView extends SmartView {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
   }
 
+
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(this._data);
+  }
+
+  setFormDeleteHandler = (callback) =>{
+    this._callback.formDelete = callback;
+    this.element.querySelector('.event--edit').addEventListener('click', this.#formDeleteHandler);
+    // this.element.querySelector('.event__reset-btn').addEventListener('submit', this.#formDeleteHandler);
+  }
+
+  #formDeleteHandler = (evt) =>{
+    evt.preventDefault();
+    // this.removeElement();
+    this._callback.formDelete(this._data);
+  }
+
+  #setEditPriceForm = () => {
+    this.element.querySelector('.event--edit')
+      .addEventListener('submit', this.#updatePriceHandler);
+  }
+
+  #updatePriceHandler = (evt) => {
+    evt.preventDefault();
+    const priceValue = this.element.querySelector('.event__input--price').value;
+    this.updateData({price : priceValue});
   }
 
   #setDatePikcker = () => {
@@ -250,13 +279,14 @@ export default class OfferFormView extends SmartView {
     parent.replaceChild(newElement, prevElement);
     this.renderOffers(this._pointType);
 
-    this._restoreHandlers();//добавить приватность
+    this._restoreHandlers();
   }
 
-  _restoreHandlers = ()=> {
+  _restoreHandlers = () => {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClickHandler();
     this.setEditDestinationForm();
+    this.#setEditPriceForm();
     this.#setDatePikcker();
   }
 
@@ -267,4 +297,6 @@ export default class OfferFormView extends SmartView {
     this._data = { ...this._data, ...update};
     this.updateElement();
   }
+
+
 }

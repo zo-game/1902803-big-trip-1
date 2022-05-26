@@ -30,6 +30,7 @@ export default class SmartView extends AbstractView{
         .addEventListener('input', this.#updateDestinationHandler);
     }
 
+
     #updateDestinationHandler = (evt) =>{
       evt.preventDefault();
       if(isEqualCities(evt.target.value)){

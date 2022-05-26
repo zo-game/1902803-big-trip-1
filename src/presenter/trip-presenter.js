@@ -45,7 +45,6 @@ export default class TripPresenter {
     render(this.#tripContainer, this.#pointListComponent, renderPosition.BEFOREEND);
     this.#renderBoard(true, true);
 
-
     this.#pointModel.addObserver(this.#handleModeEvent);
   }
 
@@ -66,13 +65,13 @@ export default class TripPresenter {
 
   #handleViewAction = (actionType, updateType, update) =>{
     switch(actionType){
-      case UpdateAction.UPDATE_TASK:
+      case UpdateAction.UPDATE_POINT:
         this.#pointModel.updatePoint(updateType, update);
         break;
-      case UpdateAction.ADD_TASK:
+      case UpdateAction.ADD_POINT:
         this.#pointModel.addPoint(updateType, update);
         break;
-      case UpdateAction.DELETE_TASK:
+      case UpdateAction.DELETE_POINT:
         this.#pointModel.deletePoint(updateType, update);
         break;
     }

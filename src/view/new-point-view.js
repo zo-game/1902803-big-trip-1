@@ -3,6 +3,7 @@ import { servises } from '../mock/point';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
+import he from 'he';
 
 
 const createOfferForm = (point) => {
@@ -77,7 +78,7 @@ const createOfferForm = (point) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination)}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
@@ -98,7 +99,7 @@ const createOfferForm = (point) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -170,6 +171,7 @@ export default class NewPointView extends SmartView {
 
     this.setFormClickHandler();
     this.setEditDestinationForm();
+    this.#setEditPriceForm();
     this.setFormSubmitHandler();
     this.#setDatePikcker();
   }
@@ -266,5 +268,16 @@ export default class NewPointView extends SmartView {
     }
     this._data = { ...this._data, ...update};
     this.updateElement();
+  }
+
+  #setEditPriceForm = () => {
+    this.element.querySelector('.event--edit')
+      .addEventListener('submit', this.#updatePriceHandler);
+  }
+
+  #updatePriceHandler = (evt) => {
+    evt.preventDefault();
+    const priceElement = this.element.querySelector('.event__input--price').value;
+    this.updateData({price : priceElement});
   }
 }

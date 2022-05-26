@@ -91,7 +91,7 @@ export default class NewPointPresenter {
   }
 
   #handleFavorite = () => {
-    this.#changeAction(UpdateAction.UPDATE_TASK, UpdateType.PATCH, { ...this.#point, isFavorite: !this.#point.isFavorite });
+    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, { ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
   #handleFormSubmit = (point) => {
@@ -102,7 +102,7 @@ export default class NewPointPresenter {
 
     const pointPresenter = new PointPresenter(this.#pointContainer, this.#changeAction);
     this.#pointPresenters.set(point.id, pointPresenter);
-    this.#changeAction(UpdateAction.ADD_TASK, UpdateType.MAJOR, point);
+    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
 
   }
 

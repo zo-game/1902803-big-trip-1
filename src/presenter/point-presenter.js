@@ -39,6 +39,7 @@ export default class PointPresenter {
 
     this.#pointComponent.setEditClickHandler(this.#handleEdit);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setFormDeleteHandler(this.#handleFormReset);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
     render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
 
@@ -91,18 +92,23 @@ export default class PointPresenter {
   }
 
   #handleFavorite = () => {
-    this.#changeAction(UpdateAction.UPDATE_TASK, UpdateType.PATCH, { ...this.#point, isFavorite: !this.#point.isFavorite });
+    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, { ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
   #handleFormSubmit = (point) => {
     this.#replaceFormToPoint();//
     document.removeEventListener('keydown', this.#onEscKeydowm);//
 
-    this.#changeAction(UpdateAction.UPDATE_TASK, UpdateType.PATCH, point);
+    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point);
   }
 
   #handleEdit = () => {
     this.#replacePointToForm();
     document.addEventListener('keydown', this.#onEscKeydowm);
+  }
+
+  #handleFormReset = (point) => {
+    this.#replaceFormToPoint();
+    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MINOR, point);
   }
 }

@@ -14,7 +14,7 @@ export default class SmartView extends AbstractView{
         destinationInfo : {description: point.destinationInfo.description,
           pictures : point.destinationInfo.pictures},
         id: nanoid()});
-      this.renderOffers(point.destination);
+      this.renderOffers(point.pointType);
     }
 
 
@@ -30,6 +30,7 @@ export default class SmartView extends AbstractView{
         .addEventListener('input', this.#updateDestinationHandler);
     }
 
+
     #updateDestinationHandler = (evt) =>{
       evt.preventDefault();
       if(isEqualCities(evt.target.value)){
@@ -44,8 +45,8 @@ export default class SmartView extends AbstractView{
       this.updateData({pointType : this._pointType});
     }
 
-    renderOffers = (point) =>{
-      const count = servises[point].length;
+    renderOffers = (pointDestination) =>{
+      const count = servises[pointDestination].length;
       const offers = this.element.querySelectorAll('.event__offer-selector');
       for(let i = 0; i < 3; i++){
         offers[i].classList.add('visually-hidden');

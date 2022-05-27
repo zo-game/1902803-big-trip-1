@@ -83,10 +83,7 @@ const createOfferForm = (point) => {
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
               <option value="Chamonix"></option>
-              <option value="Moscow"></option>
-              <option value="Perm"></option>
-              <option value="Prague"></option>
-              </datalist>
+            </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
@@ -106,7 +103,7 @@ const createOfferForm = (point) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset">Cancel</button>
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
@@ -161,7 +158,7 @@ const createOfferForm = (point) => {
     </li>`;
 };
 
-export default class OfferFormView extends SmartView {
+export default class NewPointView extends SmartView {
   #datepicker = null;
 
   constructor(point) {
@@ -172,11 +169,11 @@ export default class OfferFormView extends SmartView {
     this._pointType = point.pointType;
     this.renderOffers(point.pointType);
 
-    this.#setEditPriceForm();
     this.setFormClickHandler();
     this.setEditDestinationForm();
-    this.#setDatePikcker();
+    this.#setEditPriceForm();
     this.setFormSubmitHandler();
+    this.#setDatePikcker();
   }
 
   get template() {
@@ -188,33 +185,9 @@ export default class OfferFormView extends SmartView {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
   }
 
-
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(this._data);
-  }
-
-  setFormDeleteHandler = (callback) =>{
-    this._callback.formDelete = callback;
-    this.element.querySelector('.event--edit').addEventListener('click', this.#formDeleteHandler);
-    // this.element.querySelector('.event__reset-btn').addEventListener('submit', this.#formDeleteHandler);
-  }
-
-  #formDeleteHandler = (evt) =>{
-    evt.preventDefault();
-    // this.removeElement();
-    this._callback.formDelete(this._data);
-  }
-
-  #setEditPriceForm = () => {
-    this.element.querySelector('.event--edit')
-      .addEventListener('submit', this.#updatePriceHandler);
-  }
-
-  #updatePriceHandler = (evt) => {
-    evt.preventDefault();
-    const priceValue = this.element.querySelector('.event__input--price').value;
-    this.updateData({price : priceValue});
   }
 
   #setDatePikcker = () => {
@@ -279,14 +252,13 @@ export default class OfferFormView extends SmartView {
     parent.replaceChild(newElement, prevElement);
     this.renderOffers(this._pointType);
 
-    this._restoreHandlers();
+    this._restoreHandlers();//добавить приватность
   }
 
-  _restoreHandlers = () => {
+  _restoreHandlers = ()=> {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClickHandler();
     this.setEditDestinationForm();
-    this.#setEditPriceForm();
     this.#setDatePikcker();
   }
 
@@ -298,5 +270,14 @@ export default class OfferFormView extends SmartView {
     this.updateElement();
   }
 
+  #setEditPriceForm = () => {
+    this.element.querySelector('.event--edit')
+      .addEventListener('submit', this.#updatePriceHandler);
+  }
 
+  #updatePriceHandler = (evt) => {
+    evt.preventDefault();
+    const priceElement = this.element.querySelector('.event__input--price').value;
+    this.updateData({price : priceElement});
+  }
 }

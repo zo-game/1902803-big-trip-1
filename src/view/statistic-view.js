@@ -2,10 +2,7 @@ import { Chart } from 'chart.js';
 import SmartView from './smart-view';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const CreateStatisticTemplate = (points) => {
-  const data = points;
-
-  return `<section class="statistics">
+const CreateStatisticTemplate = () => `<section class="statistics">
   <h2 class="visually-hidden">Trip statistics</h2>
 
   <div class="statistics__item">
@@ -20,7 +17,6 @@ const CreateStatisticTemplate = (points) => {
     <canvas class="statistics__chart" id="time" width="900"></canvas>
   </div>
 </section>`;
-};
 
 const CountOfferPrice = (points)=>{
   const offerPrices = {

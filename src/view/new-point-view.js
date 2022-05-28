@@ -1,7 +1,8 @@
 import SmartView from './smart-view';
-import { servises } from '../mock/point';
+// import { servises } from '../mock/point';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import { generateDescription,  generatePictures, isEqualCities, servises} from '../mock/point';
 import dayjs from 'dayjs';
 import he from 'he';
 
@@ -279,5 +280,42 @@ export default class NewPointView extends SmartView {
     evt.preventDefault();
     const priceElement = this.element.querySelector('.event__input--price').value;
     this.updateData({price : priceElement});
+  }
+
+  setFormDeleteHandler = (callback) => {
+    this._callback.formDelete = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteHandler);
+  }
+
+  #formDeleteHandler = (evt) =>{
+    evt.preventDefault();
+    this._callback.formDelete(this._data);
+  }
+
+  setFormClickHandler = () =>{
+    (this.element.querySelectorAll('.event__type-input'))
+      .forEach((element) => {
+        element.addEventListener('click', this.#updateClickHandler);
+      });
+  }
+
+  setEditDestinationForm = () =>{
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('input', this.#updateDestinationHandler);
+  }
+
+
+  #updateDestinationHandler = (evt) =>{
+    evt.preventDefault();
+    if(isEqualCities(evt.target.value)){
+      this.updateData({destination : evt.target.value, destinationInfo : {description: generateDescription(),
+        pictures : generatePictures()}});
+    }
+  }
+
+  #updateClickHandler = (evt) =>{
+    evt.preventDefault();
+    this._pointType = evt.target.value;
+    this.updateData({pointType : this._pointType});
   }
 }

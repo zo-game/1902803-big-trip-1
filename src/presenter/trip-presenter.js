@@ -8,6 +8,7 @@ import HeaderInfoView from '../view/header-info-view';
 import FilterView from '../view/filter-view';
 import NewPointPresenter from './new-point-presenter';
 import { generatePoint } from '../mock/point';
+import StatisticView from '../view/statistic-view';
 
 import { SortType, sortPointsByPrice, sortPointsByTime, sortPointsByDate, UpdateAction, UpdateType, FilterType } from '../utils/const';
 
@@ -21,7 +22,7 @@ export default class TripPresenter {
   #sortComponent = null;
   #pointListComponent = new PointListView();
   #pointModel = null;
-  #filterModel = null;
+  #statisticComponent = null;
 
   #filterContainer = null;
   #filterComponent = null;
@@ -30,22 +31,33 @@ export default class TripPresenter {
 
   #pointPresenter = new Map();
   #currentSortType = null;
-  constructor(tripContainer, pointsModel, headerMenu, filterModel, filterContainer) {
+  constructor(tripContainer, pointsModel, headerMenu, filterContainer) {
     this.#tripContainer = tripContainer;
     this.#pointModel = pointsModel;
     this.#filterContainer = filterContainer;
     this.#headerMenuContainer = headerMenu;
-    this.#filterModel = filterModel;
     this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent,  this.#handleViewAction, this.#pointPresenter);
 
   }
 
-
-  init = () => {
+  init = (isFirstRendering = true) => {
     render(this.#tripContainer, this.#pointListComponent, renderPosition.BEFOREEND);
-    this.#renderBoard(true, true);
-
+    this.#renderBoard(isFirstRendering, true);
     this.#pointModel.addObserver(this.#handleModeEvent);
+  }
+
+  createStatistic = () =>{
+    this.#statisticComponent = new StatisticView(this.#pointModel.points);
+    render(this.#tripContainer, this.#statisticComponent, renderPosition.BEFOREBEGIN);
+  }
+
+  deleteStatistic = () =>{
+    remove(this.#statisticComponent);
+  }
+
+  destroy = () => {
+    this.#clearBoard(true, true);
+    this.#pointModel.removeObserver(this.#handleModeEvent);
   }
 
   get points(){
@@ -107,10 +119,10 @@ export default class TripPresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
-    #handleModeChange = () =>{
-      this.#newPointPresenter.destroy();
-      this.#pointPresenter.forEach((presenter) => presenter.resetView());
-    }
+  #handleModeChange = () =>{
+    this.#newPointPresenter.destroy();
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  }
 
   #handleSortTypeChange = (sortType) => {
     if (this.#currentSortType === sortType) {
@@ -152,7 +164,6 @@ export default class TripPresenter {
     this.#renderSort();
     this.#renderPoints(this.points);
   }
-
 
   #clearBoard = ({resetSortType = false} = {}, isMajor = false) => {
 
@@ -197,9 +208,14 @@ export default class TripPresenter {
     this.#newPointPresenter.isFilterDisabled = true;
     this.#currentSortType = null;
     this.#currentFilter = null;
+    remove(this.#statisticComponent);
     this.#handleModeEvent(UpdateType.MAJOR);
 
     const point = generatePoint();
     this.#newPointPresenter.init(point);
   }
+  //
+
 }
+
+

@@ -29,7 +29,6 @@ export default class NewPointPresenter {
   }
 
   init = (point) => {
-    // this.isFilterDisabled = true;
     if(this.#pointEditComponent !== null){
       return;
     }
@@ -44,6 +43,7 @@ export default class NewPointPresenter {
 
     this.#pointComponent.setEditClickHandler(this.#handleEdit);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setFormDeleteHandler(this.#handleFormReset);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
     render(this.#pointContainer, this.#pointEditComponent, renderPosition.AFTERBEGIN);
     remove(prevPointComponent);
@@ -67,7 +67,6 @@ export default class NewPointPresenter {
   }
 
   #replaceFormToPoint = () => {
-    this.#pointComponent = null;
     replace(this.#pointComponent, this.#pointEditComponent);
     this.#mode = Mode.DEFAULT;
   }
@@ -92,14 +91,19 @@ export default class NewPointPresenter {
     this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, { ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
+  #makeVisibleTabs = () =>{
+    document.querySelector( `[value=${'STATS'}]`).classList.remove('visually-hidden');
+    document.querySelector( `[value=${'TABLE'}]`).classList.remove('visually-hidden');
+  }
+
   #handleFormSubmit = (point) => {
     this.isFilterDisabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
-
     const pointPresenter = new PointPresenter(this.#pointContainer, this.#changeAction);
     this.#pointPresenters.set(point.id, pointPresenter);
+    this.#makeVisibleTabs();
     this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
 
   }
@@ -107,5 +111,15 @@ export default class NewPointPresenter {
   #handleEdit = () => {
     this.#replacePointToForm();
     document.addEventListener('keydown', this.#onEscKeydown);
+  }
+
+  #handleFormReset = (point) => {
+    this.isFilterDisabled = false;
+    document.removeEventListener('keydown', this.#onEscKeydown);
+    remove(this.#pointEditComponent);
+    this.#pointEditComponent = null;
+    this.#makeVisibleTabs();
+    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
+    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MAJOR, point);
   }
 }

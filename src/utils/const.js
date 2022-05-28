@@ -22,6 +22,12 @@ export const FilterType ={
   PAST : 'PAST',
 };
 
+export const MenuItem = {
+  TABLE : 'TABLE',
+  STATS : 'STATS',
+  ADD_NEW_EVENT : 'ADD_NEW_EVENT'
+};
+
 export const sortPointsByTime = (pointA, pointB) => pointB.waitingTime - pointA.waitingTime;
 
 export const sortPointsByPrice = (pointA, pointB) => pointB.price - pointA.price;

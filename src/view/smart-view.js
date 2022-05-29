@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view';
-import { generateDescription,  generatePictures, isEqualCities, servises} from '../mock/point';
+import { servises} from '../mock/point';
 import { nanoid } from 'nanoid';
 
 export default class SmartView extends AbstractView{
@@ -17,33 +17,6 @@ export default class SmartView extends AbstractView{
       this.renderOffers(point.pointType);
     }
 
-
-    setFormClickHandler = () =>{
-      (this.element.querySelectorAll('.event__type-input'))
-        .forEach((element) => {
-          element.addEventListener('click', this.#updateClickHandler);
-        });
-    }
-
-    setEditDestinationForm = () =>{
-      this.element.querySelector('.event__input--destination')
-        .addEventListener('input', this.#updateDestinationHandler);
-    }
-
-
-    #updateDestinationHandler = (evt) =>{
-      evt.preventDefault();
-      if(isEqualCities(evt.target.value)){
-        this.updateData({destination : evt.target.value, destinationInfo : {description: generateDescription(),
-          pictures : generatePictures()}});
-      }
-    }
-
-    #updateClickHandler = (evt) =>{
-      evt.preventDefault();
-      this._pointType = evt.target.value;
-      this.updateData({pointType : this._pointType});
-    }
 
     renderOffers = (pointDestination) =>{
       const count = servises[pointDestination].length;

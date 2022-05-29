@@ -17,6 +17,8 @@
     "@babel/plugin-proposal-optional-chaining": "7.16.0",
     "babel": "6.23.0",
     "babel-loader": "8.2.3",
+    "chart.js": "2.9.4",
+    "chartjs-plugin-datalabels": "1.0.0",
     "css-loader": "6.5.1",
     "dayjs": "1.10.8",
     "eslint": "7.32.0",

@@ -19,11 +19,13 @@ export default class PointModel extends AbstractObservable{
     init = async () => {
       try{
         const points = await this.#apiService.points;
+
         this.#points = points.map(this.#adaptToClient);
       }
       catch(err){
         this.#points = [];
       }
+
       this._notify(UpdateType.INIT);
     }
 
@@ -37,6 +39,7 @@ export default class PointModel extends AbstractObservable{
       try{
         const response = await this.#apiService.updatePoint(update);
         const updatedPoint = this.#adaptToClient(response);
+
 
         this.#points =[
           ...this.#points.slice(0, index),

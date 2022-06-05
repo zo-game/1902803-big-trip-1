@@ -115,8 +115,9 @@ const createOfferForm = (point) => {
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
                 <label class="event__offer-label" for="event-offer-luggage-1">
                   <span class="event__offer-title">${offer.offers[0] === undefined ? null : offer.offers[0].title}</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">>${offer.offers[0] === undefined ? null : offer.offers[0].price}</span>
+                  &plus;
+                  <span class="event__offer-price">${offer.offers[0] === undefined ? null : offer.offers[0].price}</span>
+                  &euro;&nbsp;
                 </label>
               </div>
 
@@ -124,8 +125,9 @@ const createOfferForm = (point) => {
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
                 <label class="event__offer-label" for="event-offer-comfort-1">
                   <span class="event__offer-title">${offer.offers[1] === undefined ? null : offer.offers[1].title}</span>
-                  &plus;&euro;&nbsp;
+                  &plus;
                   <span class="event__offer-price">${offer.offers[1] === undefined ? null : offer.offers[1].price}</span>
+                  &euro;&nbsp;
                 </label>
               </div>
 
@@ -133,8 +135,9 @@ const createOfferForm = (point) => {
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
                 <label class="event__offer-label" for="event-offer-meal-1">
                   <span class="event__offer-title">${offer.offers[2] === undefined ? null : offer.offers[2].title}</span>
-                  &plus;&euro;&nbsp;
+                  &plus;
                   <span class="event__offer-price">${offer.offers[2] === undefined ? null : offer.offers[2].price}</span>
+                  &euro;&nbsp;
                 </label>
               </div>
 
@@ -142,8 +145,9 @@ const createOfferForm = (point) => {
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
                 <label class="event__offer-label" for="event-offer-meal-1">
                   <span class="event__offer-title">${offer.offers[3] === undefined ? null : offer.offers[3].title}</span>
-                  &plus;&euro;&nbsp;
+                  &plus;
                   <span class="event__offer-price">${offer.offers[3] === undefined ? null : offer.offers[3].price}</span>
+                  &euro;&nbsp;
                 </label>
               </div>
             </div>
@@ -162,7 +166,6 @@ const createOfferForm = (point) => {
                 <img class="event__photo" src="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].src : null}" alt="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].description : ''}">
                 
                 
-                <img class="event__photo" src="${null}" alt="">
               </div>
             </div>
           </section>
@@ -182,7 +185,7 @@ export default class OfferFormView extends SmartView {
     this._pointType = point.pointType;
     // this.renderOffers(point);
 
-    this.#setEditPriceForm();
+
     this.setFormClickHandler();
     this.setEditDestinationForm();
     this.#setDatePikcker();
@@ -202,6 +205,7 @@ export default class OfferFormView extends SmartView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(this._data);
+    // this.#setEditPriceForm();
   }
 
   setFormDeleteHandler = (callback) =>{
@@ -291,11 +295,11 @@ export default class OfferFormView extends SmartView {
   }
 
   _restoreHandlers = () => {
-    this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClickHandler();
     this.setEditDestinationForm();
     this.#setEditPriceForm();
     this.#setDatePikcker();
+    this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
   updateData = (update) => {

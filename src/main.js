@@ -1,29 +1,23 @@
 import SiteMenuView from './view/site-menu-view';
 import { render, renderPosition } from './render';
-import { generatePoint } from './mock/point';
 import TripPresenter from './presenter/trip-presenter';
 import PointModel from './model/point-model';
-// import FilterModel from './model/filter-model';
 import { MenuItem } from './utils/const';
-// import StatisticView from './view/statisticView';
+import ApiService from './api-service';
 
-const POINT_COUNT = 4;
-const points = Array.from({ length: POINT_COUNT }, generatePoint);
+const AUTHORIZATION = 'Basic sdf90dfsjk3dnkl3';
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
 const tripBody = document.querySelector('.page-body');
 const headerMenu = tripBody.querySelector('.trip-main');
 const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');
 const filtersElement = tripBody.querySelector('.trip-controls__filters');
 const mainContainer = tripBody.querySelector('.trip-events');
-const pointModel = new PointModel();
-pointModel.points = points;
-const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu, filtersElement);
+const pointModel = new PointModel(new ApiService(END_POINT, AUTHORIZATION));
+
 const siteMenuComponent = new SiteMenuView();
 let currentTab = null;
-
-tripPresenter.init(pointModel.points);
-render(siteMenuElement, siteMenuComponent, renderPosition.BEFOREEND);
-
+const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu, filtersElement);
 const handlePointFormClose = () => {
   siteMenuComponent.element.querySelector( `[value=${MenuItem.STATS}]`).classList.add('visually-hidden');
   siteMenuComponent.element.querySelector( `[value=${MenuItem.TABLE}]`).classList.add('visually-hidden');
@@ -64,6 +58,12 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+tripPresenter.init();
+pointModel.init().finally(()=>{
+  render(siteMenuElement, siteMenuComponent, renderPosition.BEFOREEND);
+
+
+  siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+});
 
 

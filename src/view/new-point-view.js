@@ -1,17 +1,14 @@
 import SmartView from './smart-view';
-// import { servises } from '../mock/point';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-import { generateDescription,  generatePictures, isEqualCities, servises} from '../mock/point';
 import dayjs from 'dayjs';
 import he from 'he';
 
 
 const createOfferForm = (point) => {
-  const {pointType, destination, destinationInfo, dateStartEvent, dateEndEvent, price} = point;
+  const {pointType, destination, destinationInfo, dateStartEvent, dateEndEvent, price, offer} = point;
   const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY H:m');
   const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY H:m');
-  const offersForm = servises[point.pointType];
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -84,7 +81,11 @@ const createOfferForm = (point) => {
               <option value="Amsterdam"></option>
               <option value="Geneva"></option>
               <option value="Chamonix"></option>
-            </datalist>
+              <option value="Moscow"></option>
+              <option value="Perm"></option>
+              <option value="Prague"></option>
+              <option value="Kioto"></option>
+              </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
@@ -114,27 +115,36 @@ const createOfferForm = (point) => {
               <div class="event__offer-selector">
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
                 <label class="event__offer-label" for="event-offer-luggage-1">
-                  <span class="event__offer-title">${offersForm[0].description}</span>
+                  <span class="event__offer-title">${offer.offers[0] === undefined ? null : offer.offers[0].title}</span>
                   &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${offersForm[0].price}</span>
+                  <span class="event__offer-price">${offer.offers[0] === undefined ? null : offer.offers[0].price}</span>
                 </label>
               </div>
 
               <div class="event__offer-selector">
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
                 <label class="event__offer-label" for="event-offer-comfort-1">
-                  <span class="event__offer-title">${offersForm[1].description}</span>
+                  <span class="event__offer-title">${offer.offers[1] === undefined ? null : offer.offers[1].title}</span>
                   &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${offersForm[1].price}</span>
+                  <span class="event__offer-price">${offer.offers[1] === undefined ? null : offer.offers[1].price}</span>
                 </label>
               </div>
 
-              <div class="event__offer-selector">
+              <div class=" ${offer.offers[2] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
                 <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
                 <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">${(offersForm.length === 2) ? 'Restaurant' : offersForm[2].description}</span>
+                  <span class="event__offer-title">${offer.offers[2] === undefined ? null : offer.offers[2].title}</span>
                   &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${(offersForm.length === 2) ? '50' : offersForm[2].price}</span>
+                  <span class="event__offer-price">${offer.offers[2] === undefined ? null : offer.offers[2].price}</span>
+                </label>
+              </div>
+
+              <div class=" ${offer.offers[3] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
+                <label class="event__offer-label" for="event-offer-meal-1">
+                  <span class="event__offer-title">${offer.offers[3] === undefined ? null : offer.offers[3].title}</span>
+                  &plus;&euro;&nbsp;
+                  <span class="event__offer-price">${offer.offers[3] === undefined ? null : offer.offers[3].price}</span>
                 </label>
               </div>
             </div>
@@ -146,11 +156,14 @@ const createOfferForm = (point) => {
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="${destinationInfo.pictures[0]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[1]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[2]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[3]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[4]}" alt="Event photo">
+                <img class="event__photo" src="${destinationInfo.pictures[0] !== undefined ? destinationInfo.pictures[0].src : null}" alt="${destinationInfo.pictures[0] !== undefined ? destinationInfo.pictures[0].description : ''}">
+                <img class="event__photo" src="${destinationInfo.pictures[1] !== undefined ? destinationInfo.pictures[1].src : null}" alt="${destinationInfo.pictures[1] !== undefined ? destinationInfo.pictures[1].description : ''}">
+                <img class="event__photo" src="${destinationInfo.pictures[2] !== undefined ? destinationInfo.pictures[2].src : null}" alt="${destinationInfo.pictures[2] !== undefined ? destinationInfo.pictures[2].description : ''}">
+                <img class="event__photo" src="${destinationInfo.pictures[3] !== undefined ? destinationInfo.pictures[3].src : null}" alt="${destinationInfo.pictures[3] !== undefined ? destinationInfo.pictures[3].description : ''}">
+                <img class="event__photo" src="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].src : null}" alt="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].description : ''}">
+                
+                
+                <img class="event__photo" src="${null}" alt="">
               </div>
             </div>
           </section>
@@ -168,7 +181,7 @@ export default class NewPointView extends SmartView {
     this._data = point;
     this.initialData = point;
     this._pointType = point.pointType;
-    this.renderOffers(point.pointType);
+    // this.renderOffers(point);
 
     this.setFormClickHandler();
     this.setEditDestinationForm();
@@ -182,7 +195,9 @@ export default class NewPointView extends SmartView {
   }
 
   setFormSubmitHandler = (callback) => {
+
     this._callback.formSubmit = callback;
+
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
   }
 
@@ -260,6 +275,7 @@ export default class NewPointView extends SmartView {
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClickHandler();
     this.setEditDestinationForm();
+    this.setFormDeleteHandler();
     this.#setDatePikcker();
   }
 
@@ -283,7 +299,9 @@ export default class NewPointView extends SmartView {
   }
 
   setFormDeleteHandler = (callback) => {
-    this._callback.formDelete = callback;
+    if(this._callback.formDelete === undefined){
+      this._callback.formDelete = callback;
+    }
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteHandler);
   }
 
@@ -307,10 +325,9 @@ export default class NewPointView extends SmartView {
 
   #updateDestinationHandler = (evt) =>{
     evt.preventDefault();
-    if(isEqualCities(evt.target.value)){
-      this.updateData({destination : evt.target.value, destinationInfo : {description: generateDescription(),
-        pictures : generatePictures()}});
-    }
+    // if(isEqualCities(evt.target.value)){
+    // this.updateData({destination : evt.target.value});
+    // }
   }
 
   #updateClickHandler = (evt) =>{

@@ -1,6 +1,8 @@
+/* eslint-disable camelcase */
 const Method = {
   PUT : 'PUT',
-  GET : 'GET'
+  GET : 'GET',
+  POST : 'POST'
 };
 
 export default class ApiService {
@@ -17,7 +19,7 @@ export default class ApiService {
         .then(ApiService.parseResponse);
     }
 
-    updateTask = async (point) => {
+    updatePoint = async (point) => {
       const response = await this.#load({
         url: `points/${point.id}`,
         method: Method.PUT,
@@ -25,9 +27,21 @@ export default class ApiService {
         headers: new Headers({'Content-Type': 'application/json'}),
       });
 
+
       const parsedResponse = await ApiService.parseResponse(response);
 
       return parsedResponse;
+    }
+
+    addPoint = async (point) => {
+      const response = await this.#load({
+        url: 'points',
+        method: Method.POST,
+        body: JSON.stringify(this.#adaptToServer(point)),
+        headers: new Headers({'Content-Type': 'application/json'}),
+      });
+
+      return await ApiService.parseResponse(response);
     }
 
     #load = async ({
@@ -64,8 +78,6 @@ export default class ApiService {
         ...point,
         date_from: new Date(point['dateStartEvent']).toISOString(),
         date_to: new Date(point['dateEndEvent']).toISOString(),
-        // date_from: point['dateStartEvent'].format().toISOString(),
-        // date_to: point['dateEndEvent'].format(),
         type: point['pointType'],
         base_price: Number(point['price']),
         is_favorite: point['isFavorite'],

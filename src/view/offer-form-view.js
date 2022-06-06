@@ -183,11 +183,8 @@ export default class OfferFormView extends SmartView {
     this._data = point;
     this.initialData = point;
     this._pointType = point.pointType;
-    // this.renderOffers(point);
-
 
     this.setFormClickHandler();
-    this.setEditDestinationForm();
     this.#setDatePikcker();
     this.setFormSubmitHandler();
   }
@@ -201,11 +198,12 @@ export default class OfferFormView extends SmartView {
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
   }
 
-
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+
+    this.#updateForms();
+
     this._callback.formSubmit(this._data);
-    // this.#setEditPriceForm();
   }
 
   setFormDeleteHandler = (callback) =>{
@@ -218,17 +216,6 @@ export default class OfferFormView extends SmartView {
     this._callback.formDelete(this._data);
   }
 
-  #setEditPriceForm = () => {
-    this.element.querySelector('.event--edit')
-      .addEventListener('submit', this.#updatePriceHandler);
-  }
-
-  #updatePriceHandler = (evt) => {
-    evt.preventDefault();
-    const priceValue = this.element.querySelector('.event__input--price').value;
-    this.updateData({price : priceValue});
-  }
-
   #setDatePikcker = () => {
     this.#setDatePickerStart();
     this.#setDatePickerEnd();
@@ -238,8 +225,8 @@ export default class OfferFormView extends SmartView {
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
         enableTime: true,
+        dateFormat: 'd/m/y H:i',
         onchange: this.#dueDateStartChangeHandler,
         defaultDate: this._data.dateStartEvent,
         // eslint-disable-next-line camelcase
@@ -252,8 +239,9 @@ export default class OfferFormView extends SmartView {
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
         enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._data.dateStartEvent,
         onchange: this.#dueDateEndChangeHandler,
         // eslint-disable-next-line camelcase
         time_24hr: true,
@@ -263,13 +251,13 @@ export default class OfferFormView extends SmartView {
 
   #dueDateEndChangeHandler = ([userDate]) => {
     this.updateData({
-      dateEndEvent: userDate,
+      dateEndEvent: userDate.toISOString(),
     });
   }
 
   #dueDateStartChangeHandler = ([userDate]) => {
     this.updateData({
-      dateStartEvent: userDate,
+      dateStartEvent: userDate.toISOString(),
     });
   }
 
@@ -282,6 +270,16 @@ export default class OfferFormView extends SmartView {
     }
   }
 
+  #updateForms = () =>{
+    const priceValue = this.element.querySelector('.event__input--price').value;
+    const destinationValue = this.element.querySelector('.event__input--destination').value;
+    const timeStartValue = this.element.querySelector('#event-start-time-1').value;
+    const timeEndValue = this.element.querySelector('#event-end-time-1').value;
+    this.updateData({
+      price : priceValue, destination : destinationValue,
+      dateStartEvent: timeStartValue, dateEndEvent: timeEndValue});
+  }
+
   updateElement = () =>{
     const prevElement = this.element;
     const parent = prevElement.parentElement;
@@ -289,15 +287,12 @@ export default class OfferFormView extends SmartView {
 
     const newElement = this.element;
     parent.replaceChild(newElement, prevElement);
-    // this.renderOffers(this._pointType);
 
     this._restoreHandlers();
   }
 
   _restoreHandlers = () => {
     this.setFormClickHandler();
-    this.setEditDestinationForm();
-    this.#setEditPriceForm();
     this.#setDatePikcker();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
@@ -317,21 +312,12 @@ export default class OfferFormView extends SmartView {
       });
   }
 
-  setEditDestinationForm = () =>{
-    this.element.querySelector('.event__input--destination')
-      .addEventListener('input', this.#updateDestinationHandler);
-  }
-
-
-  #updateDestinationHandler = (evt) =>{
-    evt.preventDefault();
-    this.updateData({destination : evt.target.value});//обновление данных городов
-  }
-
   #updateClickHandler = (evt) =>{
     evt.preventDefault();
     this._pointType = evt.target.value;
-    this.updateData({pointType : this._pointType});
-  }
+    const priceValue = this.element.querySelector('.event__input--price').value;
+    const destinationValue = this.element.querySelector('.event__input--destination').value;
 
+    this.updateData({pointType : this._pointType, price : priceValue, destination : destinationValue});
+  }
 }

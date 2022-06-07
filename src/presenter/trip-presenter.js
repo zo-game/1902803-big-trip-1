@@ -1,16 +1,18 @@
 import SortView from '../view/sort-view';
+import { nanoid } from 'nanoid';
 import PointListView from '../view/point-list-view';
 import MessageWithoutPoints from '../view/empty-points-list';
 import { remove, render, renderPosition } from '../render.js';
 import PointPresenter from './point-presenter';
 import { filters } from '../utils/filter';
+import LoadingView from '../view/loading-view';
 import HeaderInfoView from '../view/header-info-view';
 import FilterView from '../view/filter-view';
 import NewPointPresenter from './new-point-presenter';
-import { generatePoint } from '../mock/point';
 import StatisticView from '../view/statistic-view';
 
 import { SortType, sortPointsByPrice, sortPointsByTime, sortPointsByDate, UpdateAction, UpdateType, FilterType } from '../utils/const';
+import dayjs from 'dayjs';
 
 
 export default class TripPresenter {
@@ -19,6 +21,7 @@ export default class TripPresenter {
 
   #currentFilter = FilterType.EVERYTHING;
   #noPointsComponent = new MessageWithoutPoints(this.#currentFilter);
+  #loadingComponent = new LoadingView();
   #sortComponent = null;
   #pointListComponent = new PointListView();
   #pointModel = null;
@@ -28,6 +31,7 @@ export default class TripPresenter {
   #filterComponent = null;
 
   #newPointPresenter = null;
+  #isLoading = true;
 
   #pointPresenter = new Map();
   #currentSortType = null;
@@ -38,12 +42,12 @@ export default class TripPresenter {
     this.#headerMenuContainer = headerMenu;
     this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent,  this.#handleViewAction, this.#pointPresenter);
 
+    this.#pointModel.addObserver(this.#handleModeEvent);
   }
 
   init = (isFirstRendering = true) => {
     render(this.#tripContainer, this.#pointListComponent, renderPosition.BEFOREEND);
     this.#renderBoard(isFirstRendering, true);
-    this.#pointModel.addObserver(this.#handleModeEvent);
   }
 
   createStatistic = () =>{
@@ -90,6 +94,7 @@ export default class TripPresenter {
   }
 
   #handleModeEvent = (updateType, data = null) => {
+    // console.log(updateType);
     switch(updateType){
       case UpdateType.PATCH:
         this.#pointPresenter.get(data.id).init(data);
@@ -102,6 +107,14 @@ export default class TripPresenter {
         this.#clearBoard(true, true);
         this.#renderBoard(false, true);
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        // this.#loadingComponent = null;
+        this.#clearBoard(true, true);
+        this.#renderBoard(true, true);
+
+        break;
     }
   }
 
@@ -111,6 +124,10 @@ export default class TripPresenter {
       this.#headerInfoComponent = new HeaderInfoView(this.points[0]).element;
       render(this.#headerMenuContainer, this.#headerInfoComponent, renderPosition.AFTERBEGIN);
     }
+  }
+
+  #renderLoading = () => {
+    render(this.#tripContainer, this.#loadingComponent, renderPosition.AFTERBEGIN);
   }
 
   #renderPoint = (point) => {
@@ -143,8 +160,12 @@ export default class TripPresenter {
       .forEach((point) => this.#renderPoint(point));
   }
 
-  #renderBoard = (isFirstRendering = false, isMajor = false) => {
+  #renderBoard = (isFirstRendering = false, isMajor = false, isRenderFilter = true) => {
 
+    if(this.#isLoading){
+      this.#renderLoading();
+      return;
+    }
     if(this.#currentSortType === null){
       this.#currentSortType = SortType.DAY;
     }
@@ -161,7 +182,9 @@ export default class TripPresenter {
     if(isMajor){
       this.#renderFilter();
     }
-    this.#renderSort();
+    if(isRenderFilter){
+      this.#renderSort();
+    }
     this.#renderPoints(this.points);
   }
 
@@ -211,9 +234,54 @@ export default class TripPresenter {
     remove(this.#statisticComponent);
     this.#handleModeEvent(UpdateType.MAJOR);
 
-    const point = generatePoint();
+    // const timeStartValue = document.querySelector('#event-start-time-1').value;
+    // const timeEndValue = document.querySelector('#event-end-time-1').value;
+    // const point = generatePoint();
+    const point = {
+      pointType : 'taxi',
+      id: nanoid(),
+      price: 110,
+      destination: 'Valencia',
+      offer: {
+        type: 'taxi',
+        offers: [
+          {id: 0, title: 'Choose the radio station', price: 30},
+          {id: 1, title: 'Choose temperature', price: 170},
+          {id: 2, title: 'Drive quickly, Im in hurry', price: 100},
+        ],
+      },
+      destinationInfo: {
+        description: 'Valencia, a true asian pearl, with crowded streets…street markets with the best street food in Asia.',
+        pictures: [{src: 'http://picsum.photos/300/200?r=0.320218355382026',
+          description: 'testDescription'}]
+      },
+
+      isFavorite: false,
+      waitingTime: 100,
+      period: ['02:20', '07:30'],
+      // offersForm : null,
+      dateStartEvent: dayjs(new Date()),
+      // dateStartEvent: timeStartValue,
+      // dateEndEvent: timeEndValue,
+      dateEndEvent: dayjs(new Date()),
+      formatDate: dayjs(new Date()).format('DD MMM'),
+    };
+    // console.log(point);
     this.#newPointPresenter.init(point);
   }
+
+  //   dateEndEvent: "06/06/22 7:30"
+  // dateStartEvent: "06/06/22 2:20"
+  // destination: "Valencia"
+  // destinationInfo: {description: 'Valencia, a true asian pearl, with crowded streets…street markets with the best street food in Asia.', pictures: Array(9)}
+  // formatDate: "06 Jun"
+  // id: "0"
+  // isFavorite: true
+  // offer: {offers: Array(3), type: 'check-in'}
+  // period: (2) ['02:20', '07:30']
+  // pointType: "check-in"
+  // price: "1100"
+  // waitingTime: 310
   //
 
 }

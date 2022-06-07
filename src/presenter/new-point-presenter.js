@@ -105,7 +105,6 @@ export default class NewPointPresenter {
     this.#pointPresenters.set(point.id, pointPresenter);
     this.#makeVisibleTabs();
     this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
-
   }
 
   #handleEdit = () => {

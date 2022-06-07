@@ -1,8 +1,16 @@
 import AbstractView from './abstract-view.js';
 
+const formatTime = (timeInMinute) => {
+  const days = Math.floor(timeInMinute / 1440) === 0 ? '' : `${Math.floor(timeInMinute / 1440)}D`;
+  const hours = Math.floor((timeInMinute % 1440) / 60) === 0 ? '' : `${Math.floor((timeInMinute % 1440) / 60)}H`;
+  const minutesRemainder = (timeInMinute % 1440) % 60;
+
+  return [days, hours, minutesRemainder];
+};
+
 const createPointTemplate = (point) => {
   const {pointType, price, destination, isFavorite, waitingTime, period, formatDate} = point;
-
+  const time = formatTime(waitingTime);
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';
@@ -20,7 +28,7 @@ const createPointTemplate = (point) => {
               &mdash;
               <time class="event__end-time" datetime="2019-03-18T11:00">${period[1]}</time>
             </p>
-            <p class="event__duration">${waitingTime}M</p>
+            <p class="event__duration">${time[0]} ${time[1]} ${time[2]}M</p>
           </div>
           <p class="event__price">
             &euro;&nbsp;<span class="event__price-value">${price}</span>
@@ -46,6 +54,7 @@ const createPointTemplate = (point) => {
       </li>
 `;
 };
+
 
 export default class PointView extends AbstractView{
   #point = null;

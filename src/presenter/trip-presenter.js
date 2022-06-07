@@ -234,12 +234,14 @@ export default class TripPresenter {
     remove(this.#statisticComponent);
     this.#handleModeEvent(UpdateType.MAJOR);
 
+    // const timeStartValue = document.querySelector('#event-start-time-1').value;
+    // const timeEndValue = document.querySelector('#event-end-time-1').value;
     // const point = generatePoint();
     const point = {
       pointType : 'taxi',
       id: nanoid(),
-      price: 0,
-      destination: '',
+      price: 110,
+      destination: 'Valencia',
       offer: {
         type: 'taxi',
         offers: [
@@ -249,19 +251,37 @@ export default class TripPresenter {
         ],
       },
       destinationInfo: {
-        description: '',
-        pictures: []
+        description: 'Valencia, a true asian pearl, with crowded streets…street markets with the best street food in Asia.',
+        pictures: [{src: 'http://picsum.photos/300/200?r=0.320218355382026',
+          description: 'testDescription'}]
       },
+
       isFavorite: false,
-      waitingTime: 0,
-      period: 0,
-      offersForm : null,
+      waitingTime: 100,
+      period: ['02:20', '07:30'],
+      // offersForm : null,
       dateStartEvent: dayjs(new Date()),
+      // dateStartEvent: timeStartValue,
+      // dateEndEvent: timeEndValue,
       dateEndEvent: dayjs(new Date()),
       formatDate: dayjs(new Date()).format('DD MMM'),
     };
+    console.log(point);
     this.#newPointPresenter.init(point);
   }
+
+  //   dateEndEvent: "06/06/22 7:30"
+  // dateStartEvent: "06/06/22 2:20"
+  // destination: "Valencia"
+  // destinationInfo: {description: 'Valencia, a true asian pearl, with crowded streets…street markets with the best street food in Asia.', pictures: Array(9)}
+  // formatDate: "06 Jun"
+  // id: "0"
+  // isFavorite: true
+  // offer: {offers: Array(3), type: 'check-in'}
+  // period: (2) ['02:20', '07:30']
+  // pointType: "check-in"
+  // price: "1100"
+  // waitingTime: 310
   //
 
 }

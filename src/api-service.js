@@ -2,7 +2,8 @@
 const Method = {
   PUT : 'PUT',
   GET : 'GET',
-  POST : 'POST'
+  POST : 'POST',
+  DELETE : 'DELETE'
 };
 
 export default class ApiService {
@@ -17,6 +18,16 @@ export default class ApiService {
     get points(){
       return this.#load({url: 'points'})
         .then(ApiService.parseResponse);
+    }
+
+    deletePoint = async (point) => {
+      const adaptedPoint = this.#adaptToServer(point);
+      const response = await this.#load({
+        url: `points/${adaptedPoint.id}`,
+        method: Method.DELETE,
+      });
+
+      return response;
     }
 
     updatePoint = async (point) => {

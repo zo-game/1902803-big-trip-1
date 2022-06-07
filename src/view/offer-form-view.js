@@ -176,7 +176,7 @@ const createOfferForm = (point) => {
 
 export default class OfferFormView extends SmartView {
   #datepicker = null;
-
+  isFilterDisabled = false;
   constructor(point) {
     super();
 
@@ -213,6 +213,9 @@ export default class OfferFormView extends SmartView {
 
   #formDeleteHandler = (evt) =>{
     evt.preventDefault();
+
+    this.#updateForms();
+
     this._callback.formDelete(this._data);
   }
 

@@ -25,7 +25,7 @@ export default class PointModel extends AbstractObservable{
       catch(err){
         this.#points = [];
       }
-      console.log(this.#points);
+      // console.log(this.#points);
       this._notify(UpdateType.INIT);
     }
 

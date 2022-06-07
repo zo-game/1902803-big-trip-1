@@ -266,7 +266,7 @@ export default class TripPresenter {
       dateEndEvent: dayjs(new Date()),
       formatDate: dayjs(new Date()).format('DD MMM'),
     };
-    console.log(point);
+    // console.log(point);
     this.#newPointPresenter.init(point);
   }
 

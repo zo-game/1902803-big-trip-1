@@ -185,8 +185,6 @@ export default class NewPointView extends SmartView {
     this._pointType = point.pointType;
 
     this.setFormClickHandler();
-    // this.setEditDestinationForm();
-    // this.#setEditPriceForm();
     this.setFormSubmitHandler();
     this.#setDatePikcker();
   }
@@ -204,10 +202,6 @@ export default class NewPointView extends SmartView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-
-    // const priceValue = this.element.querySelector('.event__input--price').value;
-    // const destinationValue = this.element.querySelector('.event__input--destination').value;
-    // this.updateData({price : priceValue, destination : destinationValue});
     this.#updateForms();
 
     this._callback.formSubmit(this._data);

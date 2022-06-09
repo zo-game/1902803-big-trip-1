@@ -6,7 +6,18 @@ import he from 'he';
 
 
 const createOfferForm = (point) => {
-  const {pointType, destination, destinationInfo, dateStartEvent, dateEndEvent, price, offer} = point;
+  const {
+    pointType,
+    destination,
+    destinationInfo,
+    dateStartEvent,
+    dateEndEvent,
+    price,
+    offer,
+    isDisabled,
+    isSaving,
+    isDeleting
+  } = point;
   const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY H:m');
   const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY H:m');
 
@@ -103,8 +114,8 @@ const createOfferForm = (point) => {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset" >${isDeleting ? 'Deleting...' : 'Delete'}</button>
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
@@ -175,8 +186,9 @@ const createOfferForm = (point) => {
 };
 
 export default class OfferFormView extends SmartView {
-  #datepicker = null;
   isFilterDisabled = false;
+
+  #datepicker = null;
   constructor(point) {
     super();
 
@@ -192,6 +204,7 @@ export default class OfferFormView extends SmartView {
   get template() {
     return createOfferForm(this._data);
   }
+
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
@@ -273,14 +286,15 @@ export default class OfferFormView extends SmartView {
     }
   }
 
-  #updateForms = () =>{
+  #updateForms = (isDisabled = false, isDeleting = false, isSaving = false) =>{
     const priceValue = this.element.querySelector('.event__input--price').value;
     const destinationValue = this.element.querySelector('.event__input--destination').value;
     const timeStartValue = this.element.querySelector('#event-start-time-1').value;
     const timeEndValue = this.element.querySelector('#event-end-time-1').value;
     this.updateData({
       price : priceValue, destination : destinationValue,
-      dateStartEvent: timeStartValue, dateEndEvent: timeEndValue});
+      dateStartEvent: timeStartValue, dateEndEvent: timeEndValue,
+      isDisabled: isDisabled, isSaving : isSaving, isDeleting : isDeleting});
   }
 
   updateElement = () =>{

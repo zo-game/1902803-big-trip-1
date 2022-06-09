@@ -5,7 +5,9 @@ import PointModel from './model/point-model';
 import { MenuItem } from './utils/const';
 import ApiService from './api-service';
 
+
 const AUTHORIZATION = 'Basic sdf90dfsjk3dnkl3sd';
+
 const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
 const tripBody = document.querySelector('.page-body');

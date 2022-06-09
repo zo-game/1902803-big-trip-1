@@ -104,7 +104,7 @@ export default class NewPointPresenter {
     const pointPresenter = new PointPresenter(this.#pointContainer, this.#changeAction);
     this.#pointPresenters.set(point.id, pointPresenter);
     this.#makeVisibleTabs();
-    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
+    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.PATCH, point);
   }
 
   #handleEdit = () => {
@@ -121,4 +121,12 @@ export default class NewPointPresenter {
     this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
     this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MAJOR, point);
   }
+
+  setSaving = () => {
+    this.#pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
 }

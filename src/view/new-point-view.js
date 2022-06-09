@@ -324,4 +324,6 @@ export default class NewPointView extends SmartView {
       price : priceValue, destination : destinationValue,
       dateStartEvent: timeStartValue, dateEndEvent: timeEndValue});
   }
+
+
 }

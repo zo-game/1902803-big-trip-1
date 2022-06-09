@@ -63,7 +63,6 @@ export default class PointModel extends AbstractObservable{
       } catch(err){
         throw new Error('Cant add point');
       }
-      // this._notify(updateType, update);//
     }
 
     // addPoint = (updateType, update) => {
@@ -86,6 +85,7 @@ export default class PointModel extends AbstractObservable{
 
     //   this._notify(updateType);
     // }
+
     deletePoint = async (updateType, update) => {
       const index = this.#points.findIndex((point) => point.id === update.id);
 

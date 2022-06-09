@@ -5,9 +5,9 @@ export const SortType = {
 };
 
 export const UpdateAction = {
-  UPDATE_POINT: 'UPDATE_TASK',
-  ADD_POINT: 'ADD_TASK',
-  DELETE_POINT:'DELETE_TASK',
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT:'DELETE_POINT',
 };
 
 export const UpdateType = {

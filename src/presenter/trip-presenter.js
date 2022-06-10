@@ -88,12 +88,17 @@ export default class TripPresenter {
           await this.#pointModel.updatePoint(updateType, update);
         }
         catch(err){
-          console.log(err);
+          this.#pointPresenter(update.id).setViewState(State.ABORTING);
         }
         break;
       case UpdateAction.ADD_POINT:
-        this.#pointPresenter.get(update.id).setSaving();
-        this.#pointModel.addPoint(updateType, update);
+        this.#newPointPresenter.setSaving();
+        try{
+          await this.#pointModel.addPoint(updateType, update);
+        }
+        catch(err){
+          console.log(err);
+        }
         break;
       case UpdateAction.DELETE_POINT:
         this.#pointPresenter.get(update.id).setViewState(State.DELETING);
@@ -108,9 +113,9 @@ export default class TripPresenter {
   }
 
   #handleModeEvent  =  (updateType, data = null) => {
-    // console.log(updateType);
     switch(updateType){
       case UpdateType.PATCH:
+        console.log(this.#pointPresenter);
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
@@ -124,7 +129,6 @@ export default class TripPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
-        // this.#loadingComponent = null;
         this.#clearBoard(true, true);
         this.#renderBoard(true, true);
 
@@ -145,7 +149,7 @@ export default class TripPresenter {
   }
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction, this.#handleModeChange, this.#pointModel);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -188,7 +192,6 @@ export default class TripPresenter {
     }
     if(isHeaderRendering){
       this.#renderHeaderInfo();
-
     }
     if(this.points.length === 0){
       this.#renderNoPoints();

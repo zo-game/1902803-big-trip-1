@@ -99,12 +99,13 @@ export default class NewPointPresenter {
   #handleFormSubmit = (point) => {
     this.isFilterDisabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
-    remove(this.#pointEditComponent);
-    this.#pointEditComponent = null;
     const pointPresenter = new PointPresenter(this.#pointContainer, this.#changeAction);
     this.#pointPresenters.set(point.id, pointPresenter);
+    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point).finally(() => {
+      remove(this.#pointEditComponent);
+      this.#pointEditComponent = null;
+    });
     this.#makeVisibleTabs();
-    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.PATCH, point);
   }
 
   #handleEdit = () => {
@@ -127,6 +128,18 @@ export default class NewPointPresenter {
       isDisabled: true,
       isSaving: true,
     });
+  }
+
+  setAborting = () => {
+    const resetState = () => {
+      this.#pointEditComponent.updateData({
+        isDisabled: false,
+        isDeleting: false,
+        isSaving: false,
+      });
+    };
+
+    this.#pointEditComponent(resetState);
   }
 
 }

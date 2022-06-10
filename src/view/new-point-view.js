@@ -6,7 +6,15 @@ import he from 'he';
 
 
 const createOfferForm = (point) => {
-  const {pointType, destination, destinationInfo, dateStartEvent, dateEndEvent, price, offer} = point;
+  const {pointType,
+    destination,
+    destinationInfo,
+    dateStartEvent,
+    dateEndEvent,
+    price,
+    offer,
+    isDisabled,
+    isSaving} = point;
   const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY H:m');
   const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY H:m');
 
@@ -103,8 +111,8 @@ const createOfferForm = (point) => {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset">Cancel</button>
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
@@ -195,15 +203,12 @@ export default class NewPointView extends SmartView {
 
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
-
-
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#updateForms();
-
     this._callback.formSubmit(this._data);
   }
 

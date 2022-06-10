@@ -20,6 +20,11 @@ export default class ApiService {
         .then(ApiService.parseResponse);
     }
 
+    get offers(){
+      return this.#load({url: 'offers'})
+        .then(ApiService.parseResponse);
+    }
+
     deletePoint = async (point) => {
       const adaptedPoint = this.#adaptToServer(point);
       const response = await this.#load({

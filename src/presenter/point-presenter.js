@@ -10,7 +10,8 @@ const Mode = {
 
 export const State = {
   SAVING: 'SAVING',
-  DELETING: 'DELETING'
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
 };
 
 export default class PointPresenter {
@@ -22,13 +23,15 @@ export default class PointPresenter {
   #pointEditComponent = null;
   #changeMode = null;
   #changeAction = null;
+  #pointModel = null;
 
   #mode = Mode.DEFAULT;
 
-  constructor(pointContainer, changeAction, changeMode) {
+  constructor(pointContainer, changeAction, changeMode, pointModel) {
     this.#pointContainer = pointContainer;
     this.#changeMode = changeMode;
     this.#changeAction = changeAction;
+    this.#pointModel = pointModel;
   }
 
   init = (point) => {
@@ -39,7 +42,7 @@ export default class PointPresenter {
     const prevEditPointComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new OfferFormView(point);
+    this.#pointEditComponent = new OfferFormView(point, this.#pointModel);
 
     this.#pointComponent.setEditClickHandler(this.#handleEdit);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
@@ -73,13 +76,13 @@ export default class PointPresenter {
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
     this.#changeMode();
-    document.addEventListener('keydown', this.#onEscKeydowm);
+    // document.addEventListener('keydown', this.#onEscKeydowm);
     this.#mode = Mode.EDITING;
   }
 
   #replaceFormToPoint = () => {
     replace(this.#pointComponent, this.#pointEditComponent);
-    document.removeEventListener('keydown', this.#onEscKeydowm);
+    // document.removeEventListener('keydown', this.#onEscKeydowm);
     this.#mode = Mode.DEFAULT;
   }
 
@@ -106,8 +109,11 @@ export default class PointPresenter {
   #handleFormSubmit = (point) => {
     document.removeEventListener('keydown', this.#onEscKeydowm);
 
-    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point).finally(()=>{
-      this.#replaceFormToPoint();
+    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point).finally(() => {
+      if(!point.isSaving){
+        this.#replaceFormToPoint();
+
+      }
     });
   }
 
@@ -117,7 +123,6 @@ export default class PointPresenter {
   }
 
   #handleFormReset = (point) => {
-
     this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MINOR, point).finally(()=>{
       this.#replaceFormToPoint();
     });
@@ -127,6 +132,14 @@ export default class PointPresenter {
     if(this.#mode === Mode.DEFAULT){
       return;
     }
+
+    const resetState = () => {
+      this.#pointEditComponent.updateData({
+        isDisabled: false,
+        isDeleting: false,
+        isSaving: false,
+      });
+    };
 
     switch(state){
       case State.DELETING:
@@ -141,7 +154,11 @@ export default class PointPresenter {
           isSaving: true
         });
         break;
+      case State.ABORTING:
+        this.#pointComponent.shake(resetState);
+        this.#pointEditComponent.shake(resetState);//
     }
   }
+
 
 }

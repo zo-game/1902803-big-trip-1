@@ -6,10 +6,15 @@ import { UpdateType } from '../utils/const';
 export default class PointModel extends AbstractObservable{
     #points = [];
     #apiService = null;
+    #offers = [];
 
     constructor(apiService){
       super();
       this.#apiService = apiService;
+    }
+
+    get offers(){
+      return this.#offers;
     }
 
     get points(){
@@ -25,7 +30,17 @@ export default class PointModel extends AbstractObservable{
       catch(err){
         this.#points = [];
       }
-      // console.log(this.#points);
+
+      try{
+        const offers = await this.#apiService.offers;
+        this.#offers = offers;
+        // console.log(offers);
+      }
+      catch(err){
+        // console.log(err);
+        return err;
+      }
+
       this._notify(UpdateType.INIT);
     }
 

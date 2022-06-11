@@ -237,7 +237,7 @@ export default class OfferFormView extends SmartView {
 
   get template() {
     const offers = this.#pointModel.offers.filter((offer) => offer.type === this._data.pointType)[0];
-    console.log(offers);
+    // console.log(offers);
     return createOfferForm(this._data, offers);
   }
 

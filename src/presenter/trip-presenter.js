@@ -97,7 +97,7 @@ export default class TripPresenter {
           await this.#pointModel.addPoint(updateType, update);
         }
         catch(err){
-          console.log(err);
+          // console.log(err);
         }
         break;
       case UpdateAction.DELETE_POINT:
@@ -106,7 +106,7 @@ export default class TripPresenter {
           await this.#pointModel.deletePoint(updateType, update);
         }
         catch(err){
-          console.log(err);
+          // console.log(err);
         }
         break;
     }
@@ -115,7 +115,7 @@ export default class TripPresenter {
   #handleModeEvent  =  (updateType, data = null) => {
     switch(updateType){
       case UpdateType.PATCH:
-        console.log(this.#pointPresenter);
+        // console.log(this.#pointPresenter);
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:

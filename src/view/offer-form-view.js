@@ -322,8 +322,8 @@ export default class OfferFormView extends SmartView {
   #updateForms = (isDisabled = false, isDeleting = false, isSaving = false) =>{
     const priceValue = this.element.querySelector('.event__input--price').value;
     const destinationValue = this.element.querySelector('.event__input--destination').value;
-    const timeStartValue = this.element.querySelector('#event-start-time-1').value;
-    const timeEndValue = this.element.querySelector('#event-end-time-1').value;
+    const timeStartValue = dayjs(this.element.querySelector('#event-start-time-1').value);
+    const timeEndValue = dayjs(this.element.querySelector('#event-end-time-1').value);
     this.updateData({
       price : priceValue, destination : destinationValue,
       dateStartEvent: timeStartValue, dateEndEvent: timeEndValue,

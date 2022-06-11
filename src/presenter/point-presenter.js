@@ -76,13 +76,13 @@ export default class PointPresenter {
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
     this.#changeMode();
-    // document.addEventListener('keydown', this.#onEscKeydowm);
+    document.addEventListener('keydown', this.#onEscKeydowm);
     this.#mode = Mode.EDITING;
   }
 
   #replaceFormToPoint = () => {
     replace(this.#pointComponent, this.#pointEditComponent);
-    // document.removeEventListener('keydown', this.#onEscKeydowm);
+    document.removeEventListener('keydown', this.#onEscKeydowm);
     this.#mode = Mode.DEFAULT;
   }
 
@@ -109,12 +109,20 @@ export default class PointPresenter {
   #handleFormSubmit = (point) => {
     document.removeEventListener('keydown', this.#onEscKeydowm);
 
-    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point).finally(() => {
-      if(!point.isSaving){
-        this.#replaceFormToPoint();
+    // try{
+    //   this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point).finally(()=>{
+    //     this.#replaceFormToPoint();
 
-      }
+    //   });
+    // }
+    // catch(err){
+    //   return err;
+    // }
+    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point).finally(() => {
+
+      this.#replaceFormToPoint();
     });
+
   }
 
   #handleEdit = () => {

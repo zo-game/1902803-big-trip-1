@@ -19,13 +19,15 @@ export default class NewPointPresenter {
   #pointEditComponent = null;
   #changeAction = null;
   #pointPresenters = null;
+  #pointModel = null;
 
   #mode = Mode.DEFAULT;
 
-  constructor(pointContainer, changeAction, pointPresenters) {
+  constructor(pointContainer, changeAction, pointPresenters, pointModel) {
     this.#pointContainer = pointContainer;
     this.#changeAction = changeAction;
     this.#pointPresenters = pointPresenters;
+    this.#pointModel = pointModel;
   }
 
   init = (point) => {
@@ -39,7 +41,7 @@ export default class NewPointPresenter {
     const prevEditPointComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new NewPointView(point);
+    this.#pointEditComponent = new NewPointView(point, this.#pointModel);
 
     this.#pointComponent.setEditClickHandler(this.#handleEdit);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);

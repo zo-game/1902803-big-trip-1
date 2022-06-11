@@ -41,7 +41,7 @@ export default class TripPresenter {
     this.#pointModel = pointsModel;
     this.#filterContainer = filterContainer;
     this.#headerMenuContainer = headerMenu;
-    this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent,  this.#handleViewAction, this.#pointPresenter);
+    this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent,  this.#handleViewAction, this.#pointPresenter, this.#pointModel);
 
     this.#pointModel.addObserver(this.#handleModeEvent);
   }

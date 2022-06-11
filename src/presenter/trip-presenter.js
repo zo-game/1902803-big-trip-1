@@ -10,6 +10,7 @@ import HeaderInfoView from '../view/header-info-view';
 import FilterView from '../view/filter-view';
 import NewPointPresenter from './new-point-presenter';
 import StatisticView from '../view/statistic-view';
+import { State } from './point-presenter';
 
 import { SortType, sortPointsByPrice, sortPointsByTime, sortPointsByDate, UpdateAction, UpdateType, FilterType } from '../utils/const';
 import dayjs from 'dayjs';
@@ -40,7 +41,7 @@ export default class TripPresenter {
     this.#pointModel = pointsModel;
     this.#filterContainer = filterContainer;
     this.#headerMenuContainer = headerMenu;
-    this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent,  this.#handleViewAction, this.#pointPresenter);
+    this.#newPointPresenter = new NewPointPresenter(this.#pointListComponent,  this.#handleViewAction, this.#pointPresenter, this.#pointModel);
 
     this.#pointModel.addObserver(this.#handleModeEvent);
   }
@@ -79,24 +80,42 @@ export default class TripPresenter {
     return filteredPoints;
   }
 
-  #handleViewAction = (actionType, updateType, update) =>{
+  #handleViewAction = async (actionType, updateType, update) =>{
     switch(actionType){
       case UpdateAction.UPDATE_POINT:
-        this.#pointModel.updatePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setViewState(State.SAVING);
+        try{
+          await this.#pointModel.updatePoint(updateType, update);
+        }
+        catch(err){
+          this.#pointPresenter(update.id).setViewState(State.ABORTING);
+        }
         break;
       case UpdateAction.ADD_POINT:
-        this.#pointModel.addPoint(updateType, update);
+        this.#newPointPresenter.setSaving();
+        try{
+          await this.#pointModel.addPoint(updateType, update);
+        }
+        catch(err){
+          // console.log(err);
+        }
         break;
       case UpdateAction.DELETE_POINT:
-        this.#pointModel.deletePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setViewState(State.DELETING);
+        try{
+          await this.#pointModel.deletePoint(updateType, update);
+        }
+        catch(err){
+          // console.log(err);
+        }
         break;
     }
   }
 
-  #handleModeEvent = (updateType, data = null) => {
-    // console.log(updateType);
+  #handleModeEvent  =  (updateType, data = null) => {
     switch(updateType){
       case UpdateType.PATCH:
+        // console.log(this.#pointPresenter);/
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
@@ -105,12 +124,11 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard(true, true);
-        this.#renderBoard(false, true);
+        this.#renderBoard(true, true);
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
-        // this.#loadingComponent = null;
         this.#clearBoard(true, true);
         this.#renderBoard(true, true);
 
@@ -121,7 +139,9 @@ export default class TripPresenter {
   #headerInfoComponent = null;
   #renderHeaderInfo = () => {
     if (this.points.length !== 0) {
-      this.#headerInfoComponent = new HeaderInfoView(this.points[0]).element;
+      remove(this.#headerInfoComponent);
+      // this.#headerInfoComponent = null;
+      this.#headerInfoComponent = new HeaderInfoView(this.points);
       render(this.#headerMenuContainer, this.#headerInfoComponent, renderPosition.AFTERBEGIN);
     }
   }
@@ -131,7 +151,7 @@ export default class TripPresenter {
   }
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction);
+    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction, this.#handleModeChange, this.#pointModel);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -160,7 +180,7 @@ export default class TripPresenter {
       .forEach((point) => this.#renderPoint(point));
   }
 
-  #renderBoard = (isFirstRendering = false, isMajor = false, isRenderFilter = true) => {
+  #renderBoard = (isMajor = false, isRenderFilter = true) => {
 
     if(this.#isLoading){
       this.#renderLoading();
@@ -172,15 +192,12 @@ export default class TripPresenter {
     if(this.#currentFilter === null){
       this.#currentFilter = FilterType.EVERYTHING;
     }
-    if(isFirstRendering){
-      this.#renderHeaderInfo();
-
-    }
     if(this.points.length === 0){
       this.#renderNoPoints();
     }
     if(isMajor){
       this.#renderFilter();
+      this.#renderHeaderInfo();
     }
     if(isRenderFilter){
       this.#renderSort();
@@ -202,7 +219,6 @@ export default class TripPresenter {
       this.#filterComponent = null;
     }
 
-    this.#headerInfoComponent = null;
     remove(this.#noPointsComponent);
     remove(this.#sortComponent);
   }
@@ -234,9 +250,6 @@ export default class TripPresenter {
     remove(this.#statisticComponent);
     this.#handleModeEvent(UpdateType.MAJOR);
 
-    // const timeStartValue = document.querySelector('#event-start-time-1').value;
-    // const timeEndValue = document.querySelector('#event-end-time-1').value;
-    // const point = generatePoint();
     const point = {
       pointType : 'taxi',
       id: nanoid(),
@@ -259,30 +272,12 @@ export default class TripPresenter {
       isFavorite: false,
       waitingTime: 100,
       period: ['02:20', '07:30'],
-      // offersForm : null,
       dateStartEvent: dayjs(new Date()),
-      // dateStartEvent: timeStartValue,
-      // dateEndEvent: timeEndValue,
       dateEndEvent: dayjs(new Date()),
       formatDate: dayjs(new Date()).format('DD MMM'),
     };
-    // console.log(point);
     this.#newPointPresenter.init(point);
   }
-
-  //   dateEndEvent: "06/06/22 7:30"
-  // dateStartEvent: "06/06/22 2:20"
-  // destination: "Valencia"
-  // destinationInfo: {description: 'Valencia, a true asian pearl, with crowded streets…street markets with the best street food in Asia.', pictures: Array(9)}
-  // formatDate: "06 Jun"
-  // id: "0"
-  // isFavorite: true
-  // offer: {offers: Array(3), type: 'check-in'}
-  // period: (2) ['02:20', '07:30']
-  // pointType: "check-in"
-  // price: "1100"
-  // waitingTime: 310
-  //
 
 }
 

@@ -19,13 +19,15 @@ export default class NewPointPresenter {
   #pointEditComponent = null;
   #changeAction = null;
   #pointPresenters = null;
+  #pointModel = null;
 
   #mode = Mode.DEFAULT;
 
-  constructor(pointContainer, changeAction, pointPresenters) {
+  constructor(pointContainer, changeAction, pointPresenters, pointModel) {
     this.#pointContainer = pointContainer;
     this.#changeAction = changeAction;
     this.#pointPresenters = pointPresenters;
+    this.#pointModel = pointModel;
   }
 
   init = (point) => {
@@ -39,7 +41,7 @@ export default class NewPointPresenter {
     const prevEditPointComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new NewPointView(point);
+    this.#pointEditComponent = new NewPointView(point, this.#pointModel);
 
     this.#pointComponent.setEditClickHandler(this.#handleEdit);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
@@ -99,12 +101,13 @@ export default class NewPointPresenter {
   #handleFormSubmit = (point) => {
     this.isFilterDisabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
-    remove(this.#pointEditComponent);
-    this.#pointEditComponent = null;
     const pointPresenter = new PointPresenter(this.#pointContainer, this.#changeAction);
     this.#pointPresenters.set(point.id, pointPresenter);
+    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point).finally(() => {
+      remove(this.#pointEditComponent);
+      this.#pointEditComponent = null;
+    });
     this.#makeVisibleTabs();
-    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
   }
 
   #handleEdit = () => {
@@ -116,9 +119,28 @@ export default class NewPointPresenter {
     this.isFilterDisabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
     remove(this.#pointEditComponent);
-    this.#pointEditComponent = null;
     this.#makeVisibleTabs();
-    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
-    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MAJOR, point);
+    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MINOR, point);
+    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MINOR, point);
   }
+
+  setSaving = () => {
+    this.#pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting = () => {
+    const resetState = () => {
+      this.#pointEditComponent.updateData({
+        isDisabled: false,
+        isDeleting: false,
+        isSaving: false,
+      });
+    };
+
+    this.#pointEditComponent(resetState);
+  }
+
 }

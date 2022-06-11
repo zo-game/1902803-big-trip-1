@@ -58,10 +58,12 @@ const createPointTemplate = (point) => {
 
 export default class PointView extends AbstractView{
   #point = null;
+  #pointModel = null;
 
-  constructor(point) {
+  constructor(point, pointModel) {
     super();
     this.#point = point;
+    this.#pointModel = pointModel;
   }
 
   get template() {
@@ -81,6 +83,16 @@ export default class PointView extends AbstractView{
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  }
+
+  setFormResetHandler = (callback) => {
+    this._callback.formReset = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#resetClickHandler);
+  }
+
+  #resetClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formReset();
   }
 
   #favoriteClickHandler = (evt) => {

@@ -4,13 +4,22 @@ import AbstractView from './abstract-view.js';
 const createHeaderInfoTemplate = (points) => {
   const firstPoint = points[0];
   const secondPoint = points[points.length - 1];
-  // const wholePrice = points.
+  let middlePoint = null;
+
+  if(points.length === 3){
+    middlePoint = `${points[1].destination  }&mdash;`;
+  }
+  else if(points.length > 3){
+    middlePoint = '... &mdash;';
+  }
+  else{
+    middlePoint = '';
+  }
   const wholePrice = points.reduce((sum, point) => sum + point.price, 0);
-  // console.log(result);
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
-      <h1 class="trip-info__title">${firstPoint.destination} &mdash; ${secondPoint.destination}</h1>
+      <h1 class="trip-info__title">${firstPoint.destination} &mdash; ${middlePoint } ${secondPoint.destination}</h1>
 
       <p class="trip-info__dates">${firstPoint.dateStartEvent.format('MMM')} ${firstPoint.dateStartEvent.format('DD')}&nbsp;&mdash;&nbsp;${secondPoint.dateStartEvent.format('MMM')} ${secondPoint.dateStartEvent.format('DD')}</p>
     </div>

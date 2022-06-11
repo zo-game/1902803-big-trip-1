@@ -119,10 +119,9 @@ export default class NewPointPresenter {
     this.isFilterDisabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
     remove(this.#pointEditComponent);
-    this.#pointEditComponent = null;
     this.#makeVisibleTabs();
-    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MAJOR, point);
-    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MAJOR, point);
+    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MINOR, point);
+    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MINOR, point);
   }
 
   setSaving = () => {

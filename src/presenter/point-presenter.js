@@ -108,17 +108,7 @@ export default class PointPresenter {
 
   #handleFormSubmit = (point) => {
     document.removeEventListener('keydown', this.#onEscKeydowm);
-
-    // try{
-    //   this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point).finally(()=>{
-    //     this.#replaceFormToPoint();
-
-    //   });
-    // }
-    // catch(err){
-    //   return err;
-    // }
-    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point).finally(() => {
+    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.MAJOR, point).finally(() => {
 
       this.#replaceFormToPoint();
     });
@@ -131,7 +121,7 @@ export default class PointPresenter {
   }
 
   #handleFormReset = (point) => {
-    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MINOR, point).finally(()=>{
+    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MAJOR, point).finally(()=>{
       this.#replaceFormToPoint();
     });
   }

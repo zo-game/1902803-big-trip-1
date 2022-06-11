@@ -1,4 +1,5 @@
 import {createElement} from '../render.js';
+import AbstractView from './abstract-view.js';
 
 const createHeaderInfoTemplate = (points) => {
   const firstPoint = points[0];
@@ -19,11 +20,12 @@ const createHeaderInfoTemplate = (points) => {
     </p>
   </section>`;
 };
-export default class HeaderInfoView {
+export default class HeaderInfoView extends AbstractView{
   #element = null;
   #points = null;
 
   constructor (points) {
+    super();
     this.#points = points;
   }
 

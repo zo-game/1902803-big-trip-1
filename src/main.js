@@ -18,7 +18,7 @@ const mainContainer = tripBody.querySelector('.trip-events');
 const pointModel = new PointModel(new ApiService(END_POINT, AUTHORIZATION));
 
 const siteMenuComponent = new SiteMenuView();
-let currentTab = null;
+let currentTab = MenuItem.TABLE;
 const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu, filtersElement);
 const handlePointFormClose = () => {
   siteMenuComponent.element.querySelector( `[value=${MenuItem.STATS}]`).classList.add('visually-hidden');
@@ -47,24 +47,16 @@ const handleSiteMenuClick = (menuItem) => {
       if(currentTab !== MenuItem.TABLE){
         siteMenuComponent.setMenuItem(MenuItem.TABLE);
         tripPresenter.deleteStatistic();
-        tripPresenter.init(false);
+        tripPresenter.init(true);
         currentTab = MenuItem.TABLE;
       }
       break;
-    // case MenuItem.ADD_NEW_EVENT:
-    //   remove(statisticComponent);
-    //   tripPresenter.destroy();
-    //   tripPresenter.init();
-    //   tripPresenter.createPoint();
-    //   break;
   }
 };
 
 tripPresenter.init();
 pointModel.init().finally(()=>{
   render(siteMenuElement, siteMenuComponent, renderPosition.BEFOREEND);
-
-
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });
 

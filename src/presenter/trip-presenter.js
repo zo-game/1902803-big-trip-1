@@ -124,7 +124,7 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard(true, true);
-        this.#renderBoard(false, true);
+        this.#renderBoard(true, true);
         break;
       case UpdateType.INIT:
         this.#isLoading = false;
@@ -139,7 +139,9 @@ export default class TripPresenter {
   #headerInfoComponent = null;
   #renderHeaderInfo = () => {
     if (this.points.length !== 0) {
-      this.#headerInfoComponent = new HeaderInfoView(this.points).element;
+      remove(this.#headerInfoComponent);
+      // this.#headerInfoComponent = null;
+      this.#headerInfoComponent = new HeaderInfoView(this.points);
       render(this.#headerMenuContainer, this.#headerInfoComponent, renderPosition.AFTERBEGIN);
     }
   }
@@ -178,7 +180,7 @@ export default class TripPresenter {
       .forEach((point) => this.#renderPoint(point));
   }
 
-  #renderBoard = (isHeaderRendering = false, isMajor = false, isRenderFilter = true) => {
+  #renderBoard = (isMajor = false, isRenderFilter = true) => {
 
     if(this.#isLoading){
       this.#renderLoading();
@@ -190,14 +192,12 @@ export default class TripPresenter {
     if(this.#currentFilter === null){
       this.#currentFilter = FilterType.EVERYTHING;
     }
-    if(isHeaderRendering){
-      this.#renderHeaderInfo();
-    }
     if(this.points.length === 0){
       this.#renderNoPoints();
     }
     if(isMajor){
       this.#renderFilter();
+      this.#renderHeaderInfo();
     }
     if(isRenderFilter){
       this.#renderSort();

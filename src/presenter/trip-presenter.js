@@ -115,7 +115,7 @@ export default class TripPresenter {
   #handleModeEvent  =  (updateType, data = null) => {
     switch(updateType){
       case UpdateType.PATCH:
-        // console.log(this.#pointPresenter);
+        // console.log(this.#pointPresenter);/
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:

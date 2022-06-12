@@ -13,7 +13,6 @@ const createOfferForm = (point, offers) => {
     dateEndEvent,
     price,
     offer,
-    // isDisabled,
     isSaving} = point;
   const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY H:m');
   const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY H:m');
@@ -312,7 +311,6 @@ export default class NewPointView extends SmartView {
 
   _restoreHandlers = ()=> {
     this.setFormClickHandler();
-    // this.setEditDestinationForm();
     this.setFormDeleteHandler();
     this.#setDatePikcker();
     this.setFormSubmitHandler(this._callback.formSubmit);

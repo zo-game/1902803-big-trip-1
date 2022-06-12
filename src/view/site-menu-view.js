@@ -12,11 +12,8 @@ const createSiteMenuTemplate = () =>
   `;
 
 export default class SiteMenuView extends AbstractView{
-
-  // #siteFormChange = null;
   constructor(){
     super();
-    // this.#siteFormChange = siteFormChange;
   }
 
   get template() {
@@ -28,14 +25,10 @@ export default class SiteMenuView extends AbstractView{
     const buttons = [...this.element.querySelectorAll('.trip-tabs__btn')];
     buttons.forEach((button) =>
       button.addEventListener('click', this.#menuClickHandler));
-
-
-    // this.element.addEventListener('click', this.#menuClickHandler);
   }
 
   #menuClickHandler = (evt) => {
     evt.preventDefault();
-    // console.log(evt);
     const value = evt.target.attributes.value.nodeValue;
     this._callback.menuClick(value);
   }

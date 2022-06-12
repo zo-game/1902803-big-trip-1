@@ -374,7 +374,6 @@ export default class OfferFormView extends SmartView {
   }
 
   setDestinationHandler = () => {
-    // this._callback.handleDestination = callback;
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationHandler);
   }
 
@@ -382,20 +381,11 @@ export default class OfferFormView extends SmartView {
     const description = this.element.querySelector('.event__input--destination').value;
     const currentDestination = this.#pointModel.destinations
       .filter((des) => des.name === description)[0];
-    // console.log(this._data);
 
     this._data = {...this._data, destinationInfo: {
       description: currentDestination.description,
       pictures: currentDestination.pictures
     }};
     this.#updateForms();
-    // const updateData = {destinationInfo: {
-    //   description: currentDestination.description,
-    //   pictures: currentDestination.pictures
-    // }};
-
-    // this.updateData(updateData);
-    // this._callback.handleDestination(updateData);
-    // console.log(currentDestination);
   }
 }

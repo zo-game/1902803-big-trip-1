@@ -100,7 +100,7 @@ const createOfferForm = (point, offers, cities) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}" ${isDisabled ? 'disabled' : ''}>
+            <input class="event__input  event__input--time event-start-time-1" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}" ${isDisabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
             <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endEventTime}" ${isDisabled ? 'disabled' : ''}>
@@ -207,9 +207,7 @@ const createOfferForm = (point, offers, cities) => {
                 <img class="event__photo" src="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].src : null}" alt="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].description : ''}">
                 <img class="event__photo" src="${destinationInfo.pictures[5] !== undefined ? destinationInfo.pictures[5].src : null}" alt="${destinationInfo.pictures[5] !== undefined ? destinationInfo.pictures[5].description : ''}">
                 <img class="event__photo" src="${destinationInfo.pictures[6] !== undefined ? destinationInfo.pictures[6].src : null}" alt="${destinationInfo.pictures[6] !== undefined ? destinationInfo.pictures[6].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[7] !== undefined ? destinationInfo.pictures[7].src : null}" alt="${destinationInfo.pictures[7] !== undefined ? destinationInfo.pictures[7].description : ''}">
-                
-                
+                <img class="event__photo" src="${destinationInfo.pictures[7] !== undefined ? destinationInfo.pictures[7].src : null}" alt="${destinationInfo.pictures[7] !== undefined ? destinationInfo.pictures[7].description : ''}">                
               </div>
             </div>
           </section>
@@ -233,7 +231,7 @@ export default class OfferFormView extends SmartView {
     this._pointType = point.pointType;
 
     this.setFormClickHandler();
-    this.#setDatePikcker();
+    this.#setDatePicker();
     this.setFormSubmitHandler();
     this.setDestinationHandler();
   }
@@ -268,18 +266,19 @@ export default class OfferFormView extends SmartView {
     this._callback.formDelete(this._data);
   }
 
-  #setDatePikcker = () => {
+  #setDatePicker = () => {
     this.#setDatePickerStart();
     this.#setDatePickerEnd();
   }
 
   #setDatePickerStart =()=>{
+    const defaultData = this._data.date ? this._data.date.dateStartEvent : '';
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.dateStartEvent,
+        defaultDate: defaultData,
         onchange: this.#dueDateStartChangeHandler,
         // eslint-disable-next-line camelcase
         time_24hr: true,
@@ -288,12 +287,13 @@ export default class OfferFormView extends SmartView {
   }
 
   #setDatePickerEnd =()=>{
+    const defaultData = this._data.date ? this._data.date.dateEndEvent : '';
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.dateEndEvent,
+        defaultDate: defaultData,
         onchange: this.#dueDateEndChangeHandler,
         // eslint-disable-next-line camelcase
         time_24hr: true,
@@ -325,8 +325,10 @@ export default class OfferFormView extends SmartView {
   #updateForms = (isDisabled = false, isDeleting = false, isSaving = false) => {
     const priceValue = this.element.querySelector('.event__input--price').value;
     const destinationValue = this.element.querySelector('.event__input--destination').value;
-    const timeStartValue = dayjs(this.element.querySelector('#event-start-time-1').value.toISOString);
-    const timeEndValue = dayjs(this.element.querySelector('#event-end-time-1').value.toISOString);
+    const timeStart = (this.element.querySelector('#event-start-time-1').value).split('/');
+    const timeEnd = (this.element.querySelector('#event-end-time-1').value).split('/');
+    const timeStartValue = new Date(`${timeStart[1]}/${timeStart[0]}/${timeStart[2]}`).toISOString();
+    const timeEndValue = new Date(`${timeEnd[1]}/${timeEnd[0]}/${timeEnd[2]}`).toISOString();
     this.updateData({...this._data,
       price : priceValue, destination : destinationValue,
       dateStartEvent: timeStartValue, dateEndEvent: timeEndValue,
@@ -346,7 +348,7 @@ export default class OfferFormView extends SmartView {
 
   _restoreHandlers = () => {
     this.setFormClickHandler();
-    this.#setDatePikcker();
+    this.#setDatePicker();
     this.setDestinationHandler();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }

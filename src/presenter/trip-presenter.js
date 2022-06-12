@@ -80,7 +80,7 @@ export default class TripPresenter {
     return filteredPoints;
   }
 
-  #handleViewAction = async (actionType, updateType, update) =>{
+  #handleViewAction = async (actionType, updateType, update) => {
     switch(actionType){
       case UpdateAction.UPDATE_POINT:
         this.#pointPresenter.get(update.id).setViewState(State.SAVING);
@@ -97,7 +97,7 @@ export default class TripPresenter {
           await this.#pointModel.addPoint(updateType, update);
         }
         catch(err){
-          // console.log(err);
+          this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
         }
         break;
       case UpdateAction.DELETE_POINT:
@@ -106,7 +106,7 @@ export default class TripPresenter {
           await this.#pointModel.deletePoint(updateType, update);
         }
         catch(err){
-          // console.log(err);
+          this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
         }
         break;
     }
@@ -140,7 +140,6 @@ export default class TripPresenter {
   #renderHeaderInfo = () => {
     if (this.points.length !== 0) {
       remove(this.#headerInfoComponent);
-      // this.#headerInfoComponent = null;
       this.#headerInfoComponent = new HeaderInfoView(this.points);
       render(this.#headerMenuContainer, this.#headerInfoComponent, renderPosition.AFTERBEGIN);
     }

@@ -6,7 +6,7 @@ import { MenuItem } from './utils/const';
 import ApiService from './api-service';
 
 
-const AUTHORIZATION = 'Basic sdf90dfsjk3dnkl3s1sd';
+const AUTHORIZATION = 'Basic sdf90dfsjk3dnkl3s1dssd';
 
 const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 

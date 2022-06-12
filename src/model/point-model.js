@@ -1,6 +1,6 @@
 import AbstractObservable from '../abstract-observable';
 import dayjs from 'dayjs';
-import { UpdateType } from '../utils/const';
+import {UpdateType } from '../utils/const';
 
 
 export default class PointModel extends AbstractObservable{
@@ -33,7 +33,6 @@ export default class PointModel extends AbstractObservable{
 
         this.#offers = await this.#apiService.offers;
         this.#destinations = await this.#apiService.destinations;
-        console.log(this.#destinations);
       }
       catch(err){
         this.#points = [];
@@ -97,6 +96,7 @@ export default class PointModel extends AbstractObservable{
         throw new Error('Cant delete point');
       }
     }
+
 
     #adaptToClient = (point) => {
       const adaptedPoint = {

@@ -115,7 +115,6 @@ export default class TripPresenter {
   #handleModeEvent  =  (updateType, data = null) => {
     switch(updateType){
       case UpdateType.PATCH:
-        // console.log(this.#pointPresenter);/
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
@@ -180,7 +179,6 @@ export default class TripPresenter {
   }
 
   #renderBoard = (isMajor = false, isRenderFilter = true) => {
-
     if(this.#isLoading){
       this.#renderLoading();
       return;
@@ -202,6 +200,8 @@ export default class TripPresenter {
       this.#renderSort();
     }
     this.#renderPoints(this.points);
+
+
   }
 
   #clearBoard = ({resetSortType = false} = {}, isMajor = false) => {
@@ -223,7 +223,7 @@ export default class TripPresenter {
   }
 
   #renderFilter = () =>{
-    this.#filterComponent = new FilterView(this.#currentFilter, this.#newPointPresenter);
+    this.#filterComponent = new FilterView(this.#currentFilter, this.#newPointPresenter, this.#pointModel);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterChange);
     render(this.#filterContainer, this.#filterComponent, renderPosition.BEFOREEND);
   }

@@ -239,6 +239,9 @@ export default class OfferFormView extends SmartView {
   get template() {
     const offers = this.#pointModel.offers.filter((offer) => offer.type === this._data.pointType)[0];
     const cities = this.#pointModel.destinations.map((des) => des.name);
+    // const filteredPoints = this.#getFilteredPoints();
+
+    // console.log(isFiltersDisable);
     return createOfferForm(this._data, offers, cities);
   }
 
@@ -391,13 +394,10 @@ export default class OfferFormView extends SmartView {
       pictures: currentDestination.pictures
     }};
     this.#updateForms();
-    // const updateData = {destinationInfo: {
-    //   description: currentDestination.description,
-    //   pictures: currentDestination.pictures
-    // }};
-
-    // this.updateData(updateData);
-    // this._callback.handleDestination(updateData);
-    // console.log(currentDestination);
   }
+
+
+  // getFilteredPoints = () => {
+  //
+  // }
 }

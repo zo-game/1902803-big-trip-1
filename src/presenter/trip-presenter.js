@@ -224,7 +224,7 @@ export default class TripPresenter {
   }
 
   #renderFilter = () =>{
-    this.#filterComponent = new FilterView(this.#currentFilter, this.#newPointPresenter);
+    this.#filterComponent = new FilterView(this.#currentFilter, this.#newPointPresenter, this.#pointModel);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterChange);
     render(this.#filterContainer, this.#filterComponent, renderPosition.BEFOREEND);
   }

@@ -217,7 +217,7 @@ export default class NewPointView extends SmartView {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: defaultData,
-        onchange: this.#dueDateStartChangeHandler,
+        onchange: this.#dueDateEndChangeHandler,
         // eslint-disable-next-line camelcase
         time_24hr: true,
       }
@@ -299,7 +299,7 @@ export default class NewPointView extends SmartView {
     this.updateData({pointType : this._pointType, price : priceValue, destination : destinationValue});
   }
 
-  #updateForms = (isDisabled = false, isDeleting = false, isSaving = false) =>{
+  #updateForms = () =>{
     const priceValue = this.element.querySelector('.event__input--price').value;
     const destinationValue = this.element.querySelector('.event__input--destination').value;
     const timeStart = (this.element.querySelector('#event-start-time-1').value).split('/');
@@ -308,7 +308,6 @@ export default class NewPointView extends SmartView {
     const timeEndValue = new Date(`${timeEnd[1]}/${timeEnd[0]}/${timeEnd[2]}`).toISOString();
     this.updateData({...this._data,
       price : priceValue, destination : destinationValue,
-      dateStartEvent: timeStartValue, dateEndEvent: timeEndValue,
-      isDisabled: isDisabled, isSaving : isSaving, isDeleting : isDeleting});
+      dateStartEvent: timeStartValue, dateEndEvent: timeEndValue});
   }
 }

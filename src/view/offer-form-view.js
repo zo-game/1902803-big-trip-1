@@ -25,6 +25,11 @@ const createOfferForm = (point, offers, cities) => {
     citiesList += `<option value="${city}"></option>`;
   });
 
+  let picturesList = '';
+  destinationInfo.pictures.forEach((picture) => {
+    picturesList += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
+  });
+
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
@@ -100,7 +105,7 @@ const createOfferForm = (point, offers, cities) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}" ${isDisabled ? 'disabled' : ''}>
+            <input class="event__input  event__input--time event-start-time-1" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}" ${isDisabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
             <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endEventTime}" ${isDisabled ? 'disabled' : ''}>
@@ -200,16 +205,7 @@ const createOfferForm = (point, offers, cities) => {
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="${destinationInfo.pictures[0] !== undefined ? destinationInfo.pictures[0].src : null}" alt="${destinationInfo.pictures[0] !== undefined ? destinationInfo.pictures[0].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[1] !== undefined ? destinationInfo.pictures[1].src : null}" alt="${destinationInfo.pictures[1] !== undefined ? destinationInfo.pictures[1].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[2] !== undefined ? destinationInfo.pictures[2].src : null}" alt="${destinationInfo.pictures[2] !== undefined ? destinationInfo.pictures[2].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[3] !== undefined ? destinationInfo.pictures[3].src : null}" alt="${destinationInfo.pictures[3] !== undefined ? destinationInfo.pictures[3].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].src : null}" alt="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[5] !== undefined ? destinationInfo.pictures[5].src : null}" alt="${destinationInfo.pictures[5] !== undefined ? destinationInfo.pictures[5].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[6] !== undefined ? destinationInfo.pictures[6].src : null}" alt="${destinationInfo.pictures[6] !== undefined ? destinationInfo.pictures[6].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[7] !== undefined ? destinationInfo.pictures[7].src : null}" alt="${destinationInfo.pictures[7] !== undefined ? destinationInfo.pictures[7].description : ''}">
-                
-                
+                ${picturesList}                
               </div>
             </div>
           </section>
@@ -233,7 +229,7 @@ export default class OfferFormView extends SmartView {
     this._pointType = point.pointType;
 
     this.setFormClickHandler();
-    this.#setDatePikcker();
+    this.#setDatePicker();
     this.setFormSubmitHandler();
     this.setDestinationHandler();
   }
@@ -241,6 +237,9 @@ export default class OfferFormView extends SmartView {
   get template() {
     const offers = this.#pointModel.offers.filter((offer) => offer.type === this._data.pointType)[0];
     const cities = this.#pointModel.destinations.map((des) => des.name);
+    // const filteredPoints = this.#getFilteredPoints();
+
+    // console.log(isFiltersDisable);
     return createOfferForm(this._data, offers, cities);
   }
 
@@ -268,18 +267,19 @@ export default class OfferFormView extends SmartView {
     this._callback.formDelete(this._data);
   }
 
-  #setDatePikcker = () => {
+  #setDatePicker = () => {
     this.#setDatePickerStart();
     this.#setDatePickerEnd();
   }
 
   #setDatePickerStart =()=>{
+    const defaultData = this._data.date ? this._data.date.dateStartEvent : '';
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.dateStartEvent,
+        defaultDate: defaultData,
         onchange: this.#dueDateStartChangeHandler,
         // eslint-disable-next-line camelcase
         time_24hr: true,
@@ -288,12 +288,13 @@ export default class OfferFormView extends SmartView {
   }
 
   #setDatePickerEnd =()=>{
+    const defaultData = this._data.date ? this._data.date.dateEndEvent : '';
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.dateEndEvent,
+        defaultDate: defaultData,
         onchange: this.#dueDateEndChangeHandler,
         // eslint-disable-next-line camelcase
         time_24hr: true,
@@ -325,8 +326,10 @@ export default class OfferFormView extends SmartView {
   #updateForms = (isDisabled = false, isDeleting = false, isSaving = false) => {
     const priceValue = this.element.querySelector('.event__input--price').value;
     const destinationValue = this.element.querySelector('.event__input--destination').value;
-    const timeStartValue = dayjs(this.element.querySelector('#event-start-time-1').value.toISOString);
-    const timeEndValue = dayjs(this.element.querySelector('#event-end-time-1').value.toISOString);
+    const timeStart = (this.element.querySelector('#event-start-time-1').value).split('/');
+    const timeEnd = (this.element.querySelector('#event-end-time-1').value).split('/');
+    const timeStartValue = new Date(`${timeStart[1]}/${timeStart[0]}/${timeStart[2]}`).toISOString();
+    const timeEndValue = new Date(`${timeEnd[1]}/${timeEnd[0]}/${timeEnd[2]}`).toISOString();
     this.updateData({...this._data,
       price : priceValue, destination : destinationValue,
       dateStartEvent: timeStartValue, dateEndEvent: timeEndValue,
@@ -346,7 +349,7 @@ export default class OfferFormView extends SmartView {
 
   _restoreHandlers = () => {
     this.setFormClickHandler();
-    this.#setDatePikcker();
+    this.#setDatePicker();
     this.setDestinationHandler();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
@@ -374,6 +377,7 @@ export default class OfferFormView extends SmartView {
   }
 
   setDestinationHandler = () => {
+    // this._callback.handleDestination = callback;
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationHandler);
   }
 
@@ -381,6 +385,7 @@ export default class OfferFormView extends SmartView {
     const description = this.element.querySelector('.event__input--destination').value;
     const currentDestination = this.#pointModel.destinations
       .filter((des) => des.name === description)[0];
+    // console.log(this._data);
 
     this._data = {...this._data, destinationInfo: {
       description: currentDestination.description,
@@ -388,4 +393,9 @@ export default class OfferFormView extends SmartView {
     }};
     this.#updateForms();
   }
+
+
+  // getFilteredPoints = () => {
+  //
+  // }
 }

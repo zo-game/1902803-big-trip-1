@@ -12,6 +12,7 @@ const createOfferForm = (point, offers, cities) => {
     dateStartEvent,
     dateEndEvent,
     price,
+    offer,
     isDisabled,
     isSaving,
     isDeleting
@@ -30,13 +31,14 @@ const createOfferForm = (point, offers, cities) => {
   });
 
   let offersList = '';
-  offers.offers.forEach((offer) => {
-    offersList += `<div class="${offer === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offers.offers.indexOf(offer)}" type="checkbox" name="event-offer-luggage">
-    <label class="event__offer-label" for="event-offer-${offers.offers.indexOf(offer)}">
-      <span class="event__offer-title">${offer.title}</span>
+  offer.offers.forEach((currentOffer) => {
+    offersList += `<div class="${currentOffer === undefined ? 'visually-hidden' : 'event__offer-selector'}">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.offers.indexOf(currentOffer)}" type="checkbox" name="event-offer-luggage" 
+    value='${currentOffer.title}' ${currentOffer.isChecked ? 'checked' : ''}>
+    <label class="event__offer-label" for="event-offer-${offer.offers.indexOf(currentOffer)}">
+      <span class="event__offer-title">${currentOffer.title}</span>
       &plus;
-      <span class="event__offer-price">${offer.price}</span>
+      <span class="event__offer-price">${currentOffer.price}</span>
       &euro;&nbsp;
     </label>
   </div>`;
@@ -170,10 +172,11 @@ export default class OfferFormView extends SmartView {
     this.initialData = point;
     this._pointType = point.pointType;
 
+    this.#setOfferClickHandler();
     this.setFormClickHandler();
     this.#setDatePicker();
     this.setFormSubmitHandler();
-    this.setDestinationHandler();
+    this.#setDestinationHandler();
   }
 
   get template() {
@@ -255,7 +258,6 @@ export default class OfferFormView extends SmartView {
 
   removeElement =() =>{
     super.removeElement();
-
     if(this.#datepicker){
       this.#datepicker.destroy();
       this.#datepicker = null;
@@ -286,9 +288,10 @@ export default class OfferFormView extends SmartView {
   }
 
   _restoreHandlers = () => {
+    this.#setOfferClickHandler();
     this.setFormClickHandler();
     this.#setDatePicker();
-    this.setDestinationHandler();
+    this.#setDestinationHandler();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -314,7 +317,7 @@ export default class OfferFormView extends SmartView {
     this.#updateForms();
   }
 
-  setDestinationHandler = () => {
+  #setDestinationHandler = () => {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationHandler);
   }
 
@@ -327,5 +330,23 @@ export default class OfferFormView extends SmartView {
       pictures: currentDestination.pictures
     }};
     this.#updateForms();
+  }
+
+  #setOfferClickHandler = () => {
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((offer) => {
+      offer.addEventListener('click', this.#offerHandler);
+    });
+  }
+
+  #offerHandler = (evt) => {
+    this.#chosePoint(evt.target.value);
+  }
+
+  #chosePoint = (offerDestination) => {
+    const newOffers = this._data.offer.offers;
+    const currentPoint = this._data.offer.offers.filter((o) => o.title === offerDestination)[0];
+    const currentOffer = {...currentPoint, isChecked : !currentPoint.isChecked};
+    const currentOfferIndex = newOffers.findIndex((point) => point === currentPoint);
+    newOffers[currentOfferIndex] = currentOffer;
   }
 }

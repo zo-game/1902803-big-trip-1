@@ -167,9 +167,11 @@ export default class NewPointView extends SmartView {
     this._pointType = point.pointType;
     this.#pointModel = pointModel;
 
+    // this.#setOfferClickHandler();
     this.setFormClickHandler();
     this.setFormSubmitHandler();
     this.#setDatePikcker();
+    this.#setDestinationHandler();
   }
 
   get template() {
@@ -260,6 +262,7 @@ export default class NewPointView extends SmartView {
     this.setFormClickHandler();
     this.setFormDeleteHandler();
     this.#setDatePikcker();
+    this.#setDestinationHandler();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -310,4 +313,21 @@ export default class NewPointView extends SmartView {
       price : priceValue, destination : destinationValue,
       dateStartEvent: timeStartValue, dateEndEvent: timeEndValue});
   }
+
+  #setDestinationHandler = () => {
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationHandler);
+  }
+
+  #destinationHandler = () => {
+    const description = this.element.querySelector('.event__input--destination').value;
+    const currentDestination = this.#pointModel.destinations
+      .filter((des) => des.name === description)[0];
+    this._data = {...this._data, destinationInfo: {
+      description: currentDestination.description,
+      pictures: currentDestination.pictures
+    }};
+    this.#updateForms();
+  }
+
+
 }

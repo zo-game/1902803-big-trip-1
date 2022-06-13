@@ -12,10 +12,26 @@ const createOfferForm = (point, offers) => {
     dateStartEvent,
     dateEndEvent,
     price,
-    offer,
     isSaving} = point;
   const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY H:m');
   const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY H:m');
+  let picturesList = '';
+  destinationInfo.pictures.forEach((picture) => {
+    picturesList += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
+  });
+
+  let offersList = '';
+  offers.offers.forEach((offer) => {
+    offersList += `<div class="${offer === undefined ? 'visually-hidden' : 'event__offer-selector'}">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offers.offers.indexOf(offer)}" type="checkbox" name="event-offer-luggage">
+    <label class="event__offer-label" for="event-offer-${offers.offers.indexOf(offer)}">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;
+      <span class="event__offer-price">${offer.price}</span>
+      &euro;&nbsp;
+    </label>
+  </div>`;
+  });
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -118,75 +134,7 @@ const createOfferForm = (point, offers) => {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers ">
-              <div class="${offers.offers[0] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                <label class="event__offer-label" for="event-offer-luggage-1">
-                  <span class="event__offer-title">${offers.offers[0] === undefined ? null : offers.offers[0].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offer.offers[0] === undefined ? null : offers.offers[0].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-
-              <div class="${offers.offers[1] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                <label class="event__offer-label" for="event-offer-comfort-1">
-                  <span class="event__offer-title">${offers.offers[1] === undefined ? null : offers.offers[1].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[1] === undefined ? null : offers.offers[1].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-
-              <div class="${offers.offers[2] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">${offers.offers[2] === undefined ? null : offers.offers[2].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[2] === undefined ? null : offers.offers[2].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-
-              <div class=" ${offers.offers[3] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">${offers.offers[3] === undefined ? null : offers.offers[3].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[3] === undefined ? null : offers.offers[3].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-
-              <div class=" ${offers.offers[4] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">${offers.offers[4] === undefined ? null : offers.offers[4].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[4] === undefined ? null : offers.offers[4].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-          
-              <div class=" ${offers.offers[5] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">${offers.offers[5] === undefined ? null : offers.offers[5].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[5] === undefined ? null : offers.offers[5].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-            
-              <div class=" ${offers.offers[6] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">${offers.offers[6] === undefined ? null : offers.offers[6].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[6] === undefined ? null : offers.offers[6].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
+              ${offersList}
             </div>
           </section>
 
@@ -196,11 +144,7 @@ const createOfferForm = (point, offers) => {
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="${destinationInfo.pictures[0] !== undefined ? destinationInfo.pictures[0].src : null}" alt="${destinationInfo.pictures[0] !== undefined ? destinationInfo.pictures[0].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[1] !== undefined ? destinationInfo.pictures[1].src : null}" alt="${destinationInfo.pictures[1] !== undefined ? destinationInfo.pictures[1].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[2] !== undefined ? destinationInfo.pictures[2].src : null}" alt="${destinationInfo.pictures[2] !== undefined ? destinationInfo.pictures[2].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[3] !== undefined ? destinationInfo.pictures[3].src : null}" alt="${destinationInfo.pictures[3] !== undefined ? destinationInfo.pictures[3].description : ''}">
-                <img class="event__photo" src="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].src : null}" alt="${destinationInfo.pictures[4] !== undefined ? destinationInfo.pictures[4].description : ''}">
+                ${picturesList}
                 
                 
               </div>
@@ -251,13 +195,14 @@ export default class NewPointView extends SmartView {
   }
 
   #setDatePickerStart =()=>{
+    const defaultData = this._data.date ? this._data.date.dateStartEvent : '';
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
         enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: defaultData,
         onchange: this.#dueDateStartChangeHandler,
-        defaultDate: this._data.dateStartEvent,
         // eslint-disable-next-line camelcase
         time_24hr: true,
       }
@@ -265,12 +210,14 @@ export default class NewPointView extends SmartView {
   }
 
   #setDatePickerEnd =()=>{
+    const defaultData = this._data.date ? this._data.date.dateEndEvent : '';
     this.#datepicker = flatpickr(
-      this.element.querySelector('#event-end-time-1'),
+      this.element.querySelector('#event-start-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
         enableTime: true,
-        onchange: this.#dueDateEndChangeHandler,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: defaultData,
+        onchange: this.#dueDateStartChangeHandler,
         // eslint-disable-next-line camelcase
         time_24hr: true,
       }
@@ -352,15 +299,16 @@ export default class NewPointView extends SmartView {
     this.updateData({pointType : this._pointType, price : priceValue, destination : destinationValue});
   }
 
-  #updateForms = () =>{
+  #updateForms = (isDisabled = false, isDeleting = false, isSaving = false) =>{
     const priceValue = this.element.querySelector('.event__input--price').value;
     const destinationValue = this.element.querySelector('.event__input--destination').value;
-    const timeStartValue = dayjs(this.element.querySelector('#event-start-time-1').value.toISOString);
-    const timeEndValue = dayjs(this.element.querySelector('#event-end-time-1').value.toISOString);
-    this.updateData({
+    const timeStart = (this.element.querySelector('#event-start-time-1').value).split('/');
+    const timeEnd = (this.element.querySelector('#event-end-time-1').value).split('/');
+    const timeStartValue = new Date(`${timeStart[1]}/${timeStart[0]}/${timeStart[2]}`).toISOString();
+    const timeEndValue = new Date(`${timeEnd[1]}/${timeEnd[0]}/${timeEnd[2]}`).toISOString();
+    this.updateData({...this._data,
       price : priceValue, destination : destinationValue,
-      dateStartEvent: timeStartValue, dateEndEvent: timeEndValue});
+      dateStartEvent: timeStartValue, dateEndEvent: timeEndValue,
+      isDisabled: isDisabled, isSaving : isSaving, isDeleting : isDeleting});
   }
-
-
 }

@@ -12,7 +12,6 @@ const createOfferForm = (point, offers, cities) => {
     dateStartEvent,
     dateEndEvent,
     price,
-    offer,
     isDisabled,
     isSaving,
     isDeleting
@@ -28,6 +27,19 @@ const createOfferForm = (point, offers, cities) => {
   let picturesList = '';
   destinationInfo.pictures.forEach((picture) => {
     picturesList += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
+  });
+
+  let offersList = '';
+  offers.offers.forEach((offer) => {
+    offersList += `<div class="${offer === undefined ? 'visually-hidden' : 'event__offer-selector'}">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offers.offers.indexOf(offer)}" type="checkbox" name="event-offer-luggage">
+    <label class="event__offer-label" for="event-offer-${offers.offers.indexOf(offer)}">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;
+      <span class="event__offer-price">${offer.price}</span>
+      &euro;&nbsp;
+    </label>
+  </div>`;
   });
 
   return `<li class="trip-events__item">
@@ -125,80 +137,10 @@ const createOfferForm = (point, offers, cities) => {
         <section class="event__details">
           <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
             <div class="event__available-offers ">
-              <div class="${offers.offers[0] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                <label class="event__offer-label" for="event-offer-luggage-1">
-                  <span class="event__offer-title">${offers.offers[0] === undefined ? null : offers.offers[0].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offer.offers[0] === undefined ? null : offers.offers[0].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-
-              <div class="${offers.offers[1] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                <label class="event__offer-label" for="event-offer-comfort-1">
-                  <span class="event__offer-title">${offers.offers[1] === undefined ? null : offers.offers[1].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[1] === undefined ? null : offers.offers[1].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-
-              <div class="${offers.offers[2] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-2" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-2">
-                  <span class="event__offer-title">${offers.offers[2] === undefined ? null : offers.offers[2].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[2] === undefined ? null : offers.offers[2].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-
-              <div class=" ${offers.offers[3] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-3" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-3">
-                  <span class="event__offer-title">${offers.offers[3] === undefined ? null : offers.offers[3].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[3] === undefined ? null : offers.offers[3].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-
-              <div class=" ${offers.offers[4] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-4" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-4">
-                  <span class="event__offer-title">${offers.offers[4] === undefined ? null : offers.offers[4].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[4] === undefined ? null : offers.offers[4].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-          
-              <div class=" ${offers.offers[5] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-5" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-5">
-                  <span class="event__offer-title">${offers.offers[5] === undefined ? null : offers.offers[5].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[5] === undefined ? null : offers.offers[5].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
-            
-              <div class=" ${offers.offers[6] === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-6" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-6">
-                  <span class="event__offer-title">${offers.offers[6] === undefined ? null : offers.offers[6].title}</span>
-                  &plus;
-                  <span class="event__offer-price">${offers.offers[6] === undefined ? null : offers.offers[6].price}</span>
-                  &euro;&nbsp;
-                </label>
-              </div>
+              ${offersList}
             </div>
           </section>
-
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${destinationInfo.description}</p>
@@ -237,9 +179,6 @@ export default class OfferFormView extends SmartView {
   get template() {
     const offers = this.#pointModel.offers.filter((offer) => offer.type === this._data.pointType)[0];
     const cities = this.#pointModel.destinations.map((des) => des.name);
-    // const filteredPoints = this.#getFilteredPoints();
-
-    // console.log(isFiltersDisable);
     return createOfferForm(this._data, offers, cities);
   }
 
@@ -377,7 +316,6 @@ export default class OfferFormView extends SmartView {
   }
 
   setDestinationHandler = () => {
-    // this._callback.handleDestination = callback;
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationHandler);
   }
 
@@ -385,17 +323,10 @@ export default class OfferFormView extends SmartView {
     const description = this.element.querySelector('.event__input--destination').value;
     const currentDestination = this.#pointModel.destinations
       .filter((des) => des.name === description)[0];
-    // console.log(this._data);
-
     this._data = {...this._data, destinationInfo: {
       description: currentDestination.description,
       pictures: currentDestination.pictures
     }};
     this.#updateForms();
   }
-
-
-  // getFilteredPoints = () => {
-  //
-  // }
 }

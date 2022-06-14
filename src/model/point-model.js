@@ -129,7 +129,6 @@ export default class PointModel extends AbstractObservable{
       delete adaptedPoint['is_favorite'];
       delete adaptedPoint['base_price'];
       delete adaptedPoint['date_to'];
-
       return adaptedPoint;
     }
 }

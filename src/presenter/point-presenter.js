@@ -46,8 +46,6 @@ export default class PointPresenter {
 
     this.#pointComponent.setEditClickHandler(this.#handleEdit);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    // this.#pointEditComponent.setDestinationHandler(this.#handleFormDestination);
-    // this.#pointComponent.setFormResetHandler(this.#changeMode);
     this.#pointEditComponent.setFormDeleteHandler(this.#handleFormReset);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
     render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
@@ -125,10 +123,6 @@ export default class PointPresenter {
     this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MAJOR, point).finally(()=>{
       this.#replaceFormToPoint();
     });
-  }
-
-  #handleFormDestination = (point) => {
-    this.#changeAction(UpdateAction.UPDATE_POINT, UpdateType.PATCH, point);
   }
 
   setViewState = (state) => {

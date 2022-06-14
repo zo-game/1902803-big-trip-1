@@ -5,29 +5,41 @@ import dayjs from 'dayjs';
 import he from 'he';
 
 
-const createOfferForm = (point, offers) => {
-  const {pointType,
+const createOfferForm = (point, cities) => {
+  const {
+    pointType,
     destination,
     destinationInfo,
     dateStartEvent,
     dateEndEvent,
     price,
-    isSaving} = point;
-  const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY H:m');
-  const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY H:m');
+    offer,
+    isDisabled,
+    isSaving,
+    isDeleting
+  } = point;
+  const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY HH:mm');
+  const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY HH:mm');
+
+  let citiesList = '';
+  cities.forEach((city) => {
+    citiesList += `<option value="${city}"></option>`;
+  });
+
   let picturesList = '';
   destinationInfo.pictures.forEach((picture) => {
     picturesList += `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`;
   });
 
   let offersList = '';
-  offers.offers.forEach((offer) => {
-    offersList += `<div class="${offer === undefined ? 'visually-hidden' : 'event__offer-selector'}">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offers.offers.indexOf(offer)}" type="checkbox" name="event-offer-luggage">
-    <label class="event__offer-label" for="event-offer-${offers.offers.indexOf(offer)}">
-      <span class="event__offer-title">${offer.title}</span>
+  offer.offers.forEach((currentOffer) => {
+    offersList += `<div class="${currentOffer === undefined ? 'visually-hidden' : 'event__offer-selector'}">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.offers.indexOf(currentOffer)}" type="checkbox" name="event-offer-luggage" 
+    value='${currentOffer.title}' ${currentOffer.isChecked ? 'checked' : ''}>
+    <label class="event__offer-label" for="event-offer-${offer.offers.indexOf(currentOffer)}">
+      <span class="event__offer-title">${currentOffer.title}</span>
       &plus;
-      <span class="event__offer-price">${offer.price}</span>
+      <span class="event__offer-price">${currentOffer.price}</span>
       &euro;&nbsp;
     </label>
   </div>`;
@@ -41,7 +53,7 @@ const createOfferForm = (point, offers) => {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" >
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
@@ -99,23 +111,19 @@ const createOfferForm = (point, offers) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination)}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination)}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
-              <option value="Moscow"></option>
-              <option value="Perm"></option>
-              <option value="Prague"></option>
+              ${citiesList}
+              
               </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}">
+            <input class="event__input  event__input--time event-start-time-1" id="event-start-time-1" type="text" name="event-start-time" value="${startEventTime}" ${isDisabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endEventTime}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endEventTime}" ${isDisabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -123,30 +131,26 @@ const createOfferForm = (point, offers) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''}>
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__reset-btn" type="reset" >${isDeleting ? 'Deleting...' : 'Delete'}</button>
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
             <div class="event__available-offers ">
               ${offersList}
             </div>
           </section>
-
           <section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${destinationInfo.description}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                ${picturesList}
-                
-                
+                ${picturesList}                
               </div>
             </div>
           </section>
@@ -167,7 +171,7 @@ export default class NewPointView extends SmartView {
     this._pointType = point.pointType;
     this.#pointModel = pointModel;
 
-    // this.#setOfferClickHandler();
+    this.#setOfferClickHandler();
     this.setFormClickHandler();
     this.setFormSubmitHandler();
     this.#setDatePikcker();
@@ -175,9 +179,8 @@ export default class NewPointView extends SmartView {
   }
 
   get template() {
-    const offers = this.#pointModel.offers.filter((offer) => offer.type === this._data.pointType)[0];
-
-    return createOfferForm(this._data, offers);
+    const cities = this.#pointModel.destinations.map((des) => des.name);
+    return createOfferForm(this._data, cities);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -255,10 +258,11 @@ export default class NewPointView extends SmartView {
     const newElement = this.element;
     parent.replaceChild(newElement, prevElement);
 
-    this._restoreHandlers();
+    this.#restoreHandlers();
   }
 
-  _restoreHandlers = ()=> {
+  #restoreHandlers = ()=> {
+    this.#setOfferClickHandler();
     this.setFormClickHandler();
     this.setFormDeleteHandler();
     this.#setDatePikcker();
@@ -298,7 +302,6 @@ export default class NewPointView extends SmartView {
     this._pointType = evt.target.value;
     const priceValue = this.element.querySelector('.event__input--price').value;
     const destinationValue = this.element.querySelector('.event__input--destination').value;
-
     this.updateData({pointType : this._pointType, price : priceValue, destination : destinationValue});
   }
 
@@ -329,5 +332,18 @@ export default class NewPointView extends SmartView {
     this.#updateForms();
   }
 
+  #setOfferClickHandler = () => {
+    this.element.querySelectorAll('.event__offer-checkbox').forEach((offer) => {
+      offer.addEventListener('click', this.#offerHandler);
+    });
+  }
 
+  #offerHandler = (evt) => {
+    const offerDestination = evt.target.value;
+    const newOffers = this._data.offer.offers;
+    const currentPoint = this._data.offer.offers.filter((o) => o.title === offerDestination)[0];
+    const currentOffer = {...currentPoint, isChecked : !currentPoint.isChecked};
+    const currentOfferIndex = newOffers.findIndex((point) => point === currentPoint);
+    newOffers[currentOfferIndex] = currentOffer;
+  }
 }

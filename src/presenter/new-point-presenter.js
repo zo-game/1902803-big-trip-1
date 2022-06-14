@@ -115,13 +115,12 @@ export default class NewPointPresenter {
     document.addEventListener('keydown', this.#onEscKeydown);
   }
 
-  #handleFormReset = (point) => {
+  #handleFormReset = () => {
     this.isFilterDisabled = false;
     document.removeEventListener('keydown', this.#onEscKeydown);
     remove(this.#pointEditComponent);
+    this.#pointEditComponent = null;
     this.#makeVisibleTabs();
-    this.#changeAction(UpdateAction.ADD_POINT, UpdateType.MINOR, point);
-    this.#changeAction(UpdateAction.DELETE_POINT, UpdateType.MINOR, point);
   }
 
   setSaving = () => {
@@ -139,7 +138,6 @@ export default class NewPointPresenter {
         isSaving: false,
       });
     };
-
     this.#pointEditComponent(resetState);
   }
 

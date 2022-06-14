@@ -9,11 +9,16 @@ const formatTime = (timeInMinute) => {
 };
 
 const createPointTemplate = (point) => {
-  const {pointType, price, destination, isFavorite, waitingTime, period, formatDate} = point;
+  const {pointType, price, destination, isFavorite, waitingTime, period, formatDate, offer} = point;
   const time = formatTime(waitingTime);
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';
+  let checkedOfferList = '';
+  offer.offers.forEach((currentOffer) => {
+    checkedOfferList += `${currentOffer.isChecked ? currentOffer.title : ''} ${currentOffer.isChecked ? `&plus; ${currentOffer.price } &euro;&nbsp; <br>` : ''}`;
+  });
+
 
   return `<li class="trip-events__item">
         <div class="event">
@@ -36,8 +41,8 @@ const createPointTemplate = (point) => {
           <h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
             <li class="event__offer">
-              <span class="event__offer-title"> </span>
-              &plus;&euro;&nbsp;
+              <span class="event__offer-title"></span>
+              ${checkedOfferList}
               <span class="event__offer-price"></span>
             </li>
           </ul>

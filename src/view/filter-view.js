@@ -42,8 +42,6 @@ export default class FilterView extends AbstractView {
       filterFuture : pointsFuture.length === 0,
       filterPast : pointsPast.length === 0,
     };
-    // console.log(isFiltersDisabled);
-    // console.log(pointsPast);
 
     return createFilterTemplate(this.#currentFilter, this.#newPointPresenter.isFilterDisabled, isFiltersDisabled);
   }

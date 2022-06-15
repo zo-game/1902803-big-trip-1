@@ -1,58 +1,63 @@
 import SiteMenuView from './view/site-menu-view';
-import TicketTemplate from './view/site-ticket-view';
-import SiteFiltersView from './view/site-filter-view';
-import TripEventView from './view/site-events-view';
-import TripEditEventView from './view/site-edit-events-view';
-import { RenderPosition, render as render } from './render.js';
-import { generateEvent } from './mock/event';
-import ControlsTemplate from './view/trip-controls-template';
+import { render, renderPosition } from './render';
+import TripPresenter from './presenter/trip-presenter';
+import PointModel from './model/point-model';
+import { MenuItem } from './utils/const';
+import ApiService from './api-service';
 
-const eventCount = 8;
-const events = Array.from({length: eventCount}, generateEvent);
 
-const renderTripEvent = (eventTripListElement, tripEvent) => {
-  const tripEventComponent = new TripEventView(tripEvent);
-  const eventEditComponent = new TripEditEventView(tripEvent);
+const AUTHORIZATION = 'Basic sdf90dfsjk3dnkl3s1sd';
 
-  const replaceCardToForm = () => {
-    eventTripListElement.replaceChild(eventEditComponent.element, tripEventComponent.element);
-  };
-  const replaceFormToCard = () => {
-    eventTripListElement.replaceChild(tripEventComponent.element, eventEditComponent.element);
-  };
-  const onEscKeyDown = (evt) => {
-    if(evt.key === 'Escape' || evt.key === 'Esc'){
-      evt.preventDefault();
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-  };
-  tripEventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-    replaceCardToForm();
-    document.addEventListener('keydown', onEscKeyDown);
-  });
-  eventEditComponent.element.querySelector('.event--edit').addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    replaceFormToCard();
-    document.removeEventListener('keydown', onEscKeyDown);
-  });
-  return render(eventTripListElement, tripEventComponent.element, RenderPosition.BEFOREEND);
-};
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
+
 const tripBody = document.querySelector('.page-body');
+const headerMenu = tripBody.querySelector('.trip-main');
+const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');
+const filtersElement = tripBody.querySelector('.trip-controls__filters');
+const mainContainer = tripBody.querySelector('.trip-events');
+const pointModel = new PointModel(new ApiService(END_POINT, AUTHORIZATION));
 
-const tripControls = tripBody.querySelector('.trip-main');
-const controlsTemplate = new ControlsTemplate();
+const siteMenuComponent = new SiteMenuView();
+let currentTab = MenuItem.TABLE;
+const tripPresenter = new TripPresenter(mainContainer, pointModel, headerMenu, filtersElement);
+const handlePointFormClose = () => {
+  siteMenuComponent.element.querySelector( `[value=${MenuItem.STATS}]`).classList.add('visually-hidden');
+  siteMenuComponent.element.querySelector( `[value=${MenuItem.TABLE}]`).classList.add('visually-hidden');
+  siteMenuComponent.setMenuItem(MenuItem.TABLE);
+};
 
-render(tripControls, controlsTemplate.element, RenderPosition.BEFOREEND);
-render(controlsTemplate.element, new SiteMenuView().element, RenderPosition.AFTERBEGIN);
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter.createPoint();
+  handlePointFormClose();
+});
 
-const siteMain = tripBody.querySelector('.page-main');
-render(siteMain, new TicketTemplate(events[0]).element, RenderPosition.AFTERBEGIN);
 
-const tripEvents = tripBody.querySelector('.trip-events');
-for(let i = 0; i < eventCount; i++){
-  renderTripEvent(tripEvents, events[i]);
-}
+const handleSiteMenuClick = (menuItem) => {
+  switch(menuItem){
+    case MenuItem.STATS:
+      if(currentTab !== MenuItem.STATS){
+        siteMenuComponent.setMenuItem(MenuItem.STATS);
+        tripPresenter.createStatistic();
+        tripPresenter.destroy();
+        currentTab = MenuItem.STATS;
+      }
+      break;
+    case MenuItem.TABLE:
+      if(currentTab !== MenuItem.TABLE){
+        siteMenuComponent.setMenuItem(MenuItem.TABLE);
+        tripPresenter.deleteStatistic();
+        tripPresenter.init(true);
+        currentTab = MenuItem.TABLE;
+      }
+      break;
+  }
+};
 
-const tripFilters = tripBody.querySelector('.trip-controls__filters');
-render(tripFilters, new SiteFiltersView().element, RenderPosition.BEFOREEND);
+tripPresenter.init();
+pointModel.init().finally(()=>{
+  render(siteMenuElement, siteMenuComponent, renderPosition.BEFOREEND);
+  siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+});
+
+

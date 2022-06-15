@@ -44,6 +44,8 @@ const createOfferForm = (point, cities) => {
   </div>`;
   });
 
+  const validDescription = he.encode(destination);
+
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
         <header class="event__header">
@@ -110,7 +112,7 @@ const createOfferForm = (point, cities) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination)}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${validDescription}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
             <datalist id="destination-list-1">
               ${citiesList}
               
@@ -200,6 +202,7 @@ export default class OfferFormView extends SmartView {
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteHandler);
   }
 
+
   #formDeleteHandler = (evt) =>{
     evt.preventDefault();
 
@@ -283,10 +286,10 @@ export default class OfferFormView extends SmartView {
     const newElement = this.element;
     parent.replaceChild(newElement, prevElement);
 
-    this.#restoreHandlers();
+    this._restoreHandlers();
   }
 
-  #restoreHandlers = () => {
+  _restoreHandlers = () => {
     this.#setOfferClickHandler();
     this.setFormClickHandler();
     this.#setDatePicker();
@@ -351,6 +354,7 @@ export default class OfferFormView extends SmartView {
     });
   }
 
+
   #offerHandler = (evt) => {
     const offerDestination = evt.target.value;
     const newOffers = this._data.offer.offers;
@@ -358,5 +362,17 @@ export default class OfferFormView extends SmartView {
     const currentOffer = {...currentPoint, isChecked : !currentPoint.isChecked};
     const currentOfferIndex = newOffers.findIndex((point) => point === currentPoint);
     newOffers[currentOfferIndex] = currentOffer;
+  }
+
+  setEscResetHandler = (callback) => {
+    this._callback.eskReset = callback;
+    document.addEventListener('keydown', this.#onEscKeydown);
+  }
+
+  #onEscKeydown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc')
+    {
+      this._callback.eskReset();
+    }
   }
 }

@@ -1,4 +1,5 @@
 import AbstractView from './abstract-view.js';
+import he from 'he';
 
 const formatTime = (timeInMinute) => {
   const days = Math.floor(timeInMinute / 1440) === 0 ? '' : `${Math.floor(timeInMinute / 1440)}D`;
@@ -26,7 +27,7 @@ const createPointTemplate = (point) => {
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${pointType}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">${pointType} ${destination}</h3>
+          <h3 class="event__title">${pointType} ${he.encode(destination)}</h3>
           <div class="event__schedule">
             <p class="event__time">
               <time class="event__start-time" datetime="2019-03-18T10:30">${period[0]}</time>

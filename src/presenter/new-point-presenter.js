@@ -20,14 +20,16 @@ export default class NewPointPresenter {
   #changeAction = null;
   #pointPresenters = null;
   #pointModel = null;
+  #modeChange = null;
 
   #mode = Mode.DEFAULT;
 
-  constructor(pointContainer, changeAction, pointPresenters, pointModel) {
+  constructor(pointContainer, changeAction, pointPresenters, pointModel, modeChange) {
     this.#pointContainer = pointContainer;
     this.#changeAction = changeAction;
     this.#pointPresenters = pointPresenters;
     this.#pointModel = pointModel;
+    this.#modeChange = modeChange;
   }
 
   init = (point) => {
@@ -46,7 +48,8 @@ export default class NewPointPresenter {
     this.#pointComponent.setEditClickHandler(this.#handleEdit);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setFormDeleteHandler(this.#handleFormReset);
-    this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
+    this.#pointEditComponent.setEscResetHandler(this.#handleFormReset);
+    this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);//
     render(this.#pointContainer, this.#pointEditComponent, renderPosition.AFTERBEGIN);
     remove(prevPointComponent);
     remove(prevEditPointComponent);
@@ -65,11 +68,13 @@ export default class NewPointPresenter {
 
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
+    document.removeEventListener('keydown', this.#onEscKeydown);
     this.#mode = Mode.EDITING;
   }
 
   #replaceFormToPoint = () => {
     replace(this.#pointComponent, this.#pointEditComponent);
+    document.addEventListener('keydown', this.#onEscKeydown);
     this.#mode = Mode.DEFAULT;
   }
 
@@ -121,6 +126,7 @@ export default class NewPointPresenter {
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
     this.#makeVisibleTabs();
+    this.#modeChange(UpdateType.MAJOR);
   }
 
   setSaving = () => {

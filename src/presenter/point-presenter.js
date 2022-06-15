@@ -36,7 +36,7 @@ export default class PointPresenter {
 
   init = (point) => {
     this.#point = point;
-    this.#prevPoint = this.#point;
+    this.#prevPoint = point;
 
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#pointEditComponent;
@@ -91,14 +91,23 @@ export default class PointPresenter {
       evt.preventDefault();
       this.#replaceFormToPoint();
 
+      this.#resetOffers(this.#prevPoint);
       this.init(this.#prevPoint);
-
       this.#pointEditComponent.reset(this.#prevPoint);
-
+      // console.log(this.#prevPoint);
       this.#pointEditComponent._restoreHandlers();
       document.removeEventListener('keydown', this.#onEscKeydown);
-
+      // this.#changeMode(UpdateType.MINOR);
     }
+  }
+
+  #resetOffers = (point) => {
+    const offers = point.offer.offers;
+    offers.forEach((offer) => {
+      if(offer !== undefined || offer.isChecked !== undefined){
+        offer.isChecked = false;
+      }
+    });
   }
 
   #handleFavorite = () => {

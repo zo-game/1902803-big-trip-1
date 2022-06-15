@@ -15,8 +15,7 @@ const createOfferForm = (point, cities) => {
     price,
     offer,
     isDisabled,
-    isSaving,
-    isDeleting
+    isSaving
   } = point;
   const startEventTime = dayjs(dateStartEvent).format('DD/MM/YY HH:mm');
   const endEventTime = dayjs(dateEndEvent).format('DD/MM/YY HH:mm');
@@ -135,7 +134,7 @@ const createOfferForm = (point, cities) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
-          <button class="event__reset-btn" type="reset" >${isDeleting ? 'Deleting...' : 'Delete'}</button>
+          <button class="event__reset-btn" type="reset" >Cancel</button>
         </header>
         <section class="event__details">
           <section class="event__section  event__section--offers">
@@ -162,6 +161,7 @@ const createOfferForm = (point, cities) => {
 export default class NewPointView extends SmartView {
   #datepicker = null;
   #pointModel = null;
+  #modeChange = null;
 
   constructor(point, pointModel) {
     super();
@@ -345,5 +345,18 @@ export default class NewPointView extends SmartView {
     const currentOffer = {...currentPoint, isChecked : !currentPoint.isChecked};
     const currentOfferIndex = newOffers.findIndex((point) => point === currentPoint);
     newOffers[currentOfferIndex] = currentOffer;
+  }
+
+  setEscResetHandler = (callback) => {
+    this._callback.eskReset = callback;
+    document.addEventListener('keydown', this.#onEscKeydown);
+  }
+
+  #onEscKeydown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc')
+    {
+      this._callback.eskReset();
+
+    }
   }
 }
